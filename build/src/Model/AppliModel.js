@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
-const applicationSchema = new mongoose_1.default.Schema({
+const application = new mongoose_1.default.Schema({
     name: {
         type: String,
         require: true
@@ -12,7 +12,10 @@ const applicationSchema = new mongoose_1.default.Schema({
     email: {
         type: String,
         require: true,
-        unique: true
+    },
+    job: {
+        type: String,
+        require: true,
     }
 });
-exports.default = mongoose_1.default.model("application", applicationSchema);
+exports.default = mongoose_1.default.model("application", application);

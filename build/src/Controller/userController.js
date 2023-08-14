@@ -12,10 +12,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.newUser = exports.newApplication = exports.jobListing = void 0;
+exports.findJob = exports.newUser = exports.newApplication = exports.jobListing = void 0;
 const jobApplicaionServices_1 = require("../Services/jobApplicaionServices");
 const newUserService_1 = __importDefault(require("../Services/newUserService"));
-// import {jobObj} from "../interfaces/reqRes"
 //Job Openinigs
 const jobListing = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const getjobListing = yield (0, jobApplicaionServices_1.getJobListings)();
@@ -23,10 +22,11 @@ const jobListing = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 });
 exports.jobListing = jobListing;
 //Job Application
-const newApplication = (req, res) => {
-    (0, jobApplicaionServices_1.createAplication)(req.body);
+const newApplication = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield (0, jobApplicaionServices_1.createAplication)(req.body);
+    // console.log(req.body);
     return res.send("Application submited");
-};
+});
 exports.newApplication = newApplication;
 //New User 
 const newUser = (req, res) => {
@@ -34,3 +34,9 @@ const newUser = (req, res) => {
     return res.send("User Created!");
 };
 exports.newUser = newUser;
+//find jobs By id
+const findJob = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const getjobListingId = yield (0, jobApplicaionServices_1.getJobListingsId)(req.params.id);
+    return res.send(`Job Openings :${getjobListingId}`);
+});
+exports.findJob = findJob;

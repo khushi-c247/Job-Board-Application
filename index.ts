@@ -1,20 +1,12 @@
 import express, { Express } from 'express'
 import userRouter from './src/Router/userRouter';
 import adminRouter from './src/Router/adminRouter'
-import mongoose from 'mongoose'
+import {port} from './src/config/env'
+import dbConnection from './src/config/db'
 const app: Express = express();
 
 //mongoDB connection
-const connectDB = async () => {
-    try {
-        const conn = await mongoose.connect(`mongodb://localhost:27017/demo`);
-        console.log(`MongoDB Connected: ${conn.connection.host}`);
-    } catch (error) {
-        console.log(error);
-        process.exit(1);
-    }
-}
-connectDB();
+dbConnection()
 
 //body parsing
 app.use(express.json())
@@ -24,7 +16,7 @@ app.use(express.urlencoded())
 app.use('/admin', adminRouter)
 app.use('/user', userRouter)
 
-app.listen(3000, () => {
+app.listen(port, () => {
     console.log("server activated");
 })
 

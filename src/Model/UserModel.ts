@@ -5,15 +5,26 @@ const user = new mongoose.Schema({
         require: true
     },
     email: {
-        type : String,
+        type: String,
         require: true,
         unique: true
     },
-    experience : {
-        type : String,
-        require : true,
+    experience: {
+        type: Number,
+        require: true,
+    },
+    discription: {
+        type: String,
+        require: true,
+    },
+    graduationYear: {
+        type: Number,
+        require: true
+    },
+    appliedTo: {
+        type: [String],
+        unique: true
     }
-      
 })
 
-export default mongoose.model("user" , user)
+export default mongoose.model("user", user)

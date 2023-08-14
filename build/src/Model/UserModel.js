@@ -15,8 +15,20 @@ const user = new mongoose_1.default.Schema({
         unique: true
     },
     experience: {
+        type: Number,
+        require: true,
+    },
+    discription: {
         type: String,
         require: true,
+    },
+    graduationYear: {
+        type: Number,
+        require: true
+    },
+    appliedTo: {
+        type: [String],
+        unique: true
     }
 });
 exports.default = mongoose_1.default.model("user", user);

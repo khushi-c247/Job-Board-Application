@@ -13,22 +13,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteJob = exports.updateJob = exports.addjobOpeninigs = void 0;
-const Job_listing_1 = __importDefault(require("../Model/Job-listing"));
+const JobModel_1 = __importDefault(require("../Model/JobModel"));
 // add jobs 
 const addjobOpeninigs = (obj) => __awaiter(void 0, void 0, void 0, function* () {
-    const created = yield Job_listing_1.default.create({ type: obj.type, salary: obj.salary });
+    const created = yield JobModel_1.default.create({ title: obj.title, salary: obj.salary, discription: obj.discription, requirements: obj.requirements });
     return created;
 });
 exports.addjobOpeninigs = addjobOpeninigs;
 //update jobs
 const updateJob = (obj, id) => __awaiter(void 0, void 0, void 0, function* () {
-    const updated = yield Job_listing_1.default.findByIdAndUpdate(id, { $set: { type: obj.type, salary: obj.salary } });
+    const updated = yield JobModel_1.default.findByIdAndUpdate(id, { $set: { title: obj.title, salary: obj.salary, discription: obj.discription, requirements: obj.requirements } });
     return updated;
 });
 exports.updateJob = updateJob;
 //delete jobs
 const deleteJob = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const deleted = yield Job_listing_1.default.findByIdAndDelete(id);
+    const deleted = yield JobModel_1.default.findByIdAndDelete(id);
     return deleted;
 });
 exports.deleteJob = deleteJob;

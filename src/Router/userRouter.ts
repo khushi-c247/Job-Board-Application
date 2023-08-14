@@ -1,10 +1,16 @@
 import express from 'express'
-import {jobListing, newApplication , newUser} from '../Controller/userController'
+import { jobListing, newApplication, newUser, findJob } from '../Controller/userController'
 
 const router = express.Router()
 
-router.get("/job-listing", jobListing)
+//User routers
 router.post("/job-application", newApplication)
-router.post("/new-user",newUser)
+router.post("/new-user", newUser)
 
+//serching routers
+router.post("/find-job/:id", findJob)
+router.get("/job-openings", jobListing)
+
+//filter routers
+router.get('opening',)
 export default router; 

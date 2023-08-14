@@ -12,17 +12,32 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getJobListings = exports.createAplication = void 0;
-const AppliModel_1 = __importDefault(require("../Model/AppliModel"));
-const Job_listing_1 = __importDefault(require("../Model/Job-listing"));
+exports.getJobListingsId = exports.getJobListings = exports.createAplication = void 0;
+// import application from '../Model/AppliModel'
+const UserModel_1 = __importDefault(require("../Model/UserModel"));
+const JobModel_1 = __importDefault(require("../Model/JobModel"));
+const applicaintMailer_1 = __importDefault(require("../Mailer/applicaintMailer"));
 //create job application
 const createAplication = (obj) => __awaiter(void 0, void 0, void 0, function* () {
-    yield AppliModel_1.default.create({ name: obj.name, email: obj.email });
+    yield JobModel_1.default.findByIdAndUpdate(obj.jobId, { $push: { applicantsId: obj.userId } });
+    yield UserModel_1.default.findByIdAndUpdate(obj.userId, { $push: { appliedTo: obj.jobId } });
+    // for mailer
+    const userDetails = yield UserModel_1.default.findById(obj.userId);
+    const jobDetails = yield JobModel_1.default.findById(obj.jobId);
+    if ((userDetails === null || userDetails === void 0 ? void 0 : userDetails.email) && (jobDetails === null || jobDetails === void 0 ? void 0 : jobDetails.title)) {
+        (0, applicaintMailer_1.default)(userDetails.email, jobDetails.title);
+    }
 });
 exports.createAplication = createAplication;
-// get existing job openings from DB
+// get existing job openings from DB  
 const getJobListings = () => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield Job_listing_1.default.find();
+    const result = yield JobModel_1.default.find();
     return result;
 });
 exports.getJobListings = getJobListings;
+// get existing job openings by id from DB  
+const getJobListingsId = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield JobModel_1.default.findById(id);
+    return result;
+});
+exports.getJobListingsId = getJobListingsId;
