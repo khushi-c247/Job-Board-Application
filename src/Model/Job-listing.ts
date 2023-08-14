@@ -1,5 +1,5 @@
 import mongoose from "mongoose"
-const Jobschema = new mongoose.Schema({
+const job = new mongoose.Schema({
     type: {
         type: String,
         require: true
@@ -11,4 +11,4 @@ const Jobschema = new mongoose.Schema({
     }
 })
 
-export default mongoose.model("job" , Jobschema)
+export default mongoose.model("job" , job)

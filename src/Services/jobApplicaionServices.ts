@@ -1,11 +1,17 @@
 import applicationModel from '../Model/AppliModel'
-interface appliObj {
-   name : string,
-   email : string
+import jobsListing from '../Model/Job-listing'
+import {appliObj} from  '../interfaces/reqRes'
 
-}
- const createAplication =   async (obj : appliObj)=>{
+//create job application
+  const createAplication =   async (obj : appliObj)=>{
    await applicationModel.create({name : obj.name , email : obj.email})
- }
+  }
 
- export  default createAplication
+// get existing job openings from DB
+  const getJobListings = async () =>{
+   const result = await jobsListing.find()
+   return result; 
+  }
+  
+// Create a new User to DataBase
+ export  {createAplication, getJobListings} 

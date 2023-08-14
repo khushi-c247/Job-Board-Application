@@ -1,20 +1,16 @@
 import jobModel from '../Model/Job-listing'
-    interface reqObj  {
-        type : string,
-        salary : number
-    }
+import {jobObj} from '../interfaces/reqRes'
 
 // add jobs 
-const addjobOpeninigs =  async(obj : reqObj)=>{
+const addjobOpeninigs =  async(obj : jobObj)=>{
     const created  = await jobModel.create({type : obj.type , salary : obj.salary})
     return created;
  }
 
 //update jobs
- const updateJob =  async(obj : reqObj , id: string)=>{
+ const updateJob =  async(obj : jobObj , id: string)=>{
  const updated  = await jobModel.findByIdAndUpdate(id, {$set :{type :obj.type , salary: obj.salary}})
-    // add object to res.send
-    return updated;
+ return updated;
  }
 
 //delete jobs

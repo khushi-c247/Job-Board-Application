@@ -23,7 +23,6 @@ exports.addjobOpeninigs = addjobOpeninigs;
 //update jobs
 const updateJob = (obj, id) => __awaiter(void 0, void 0, void 0, function* () {
     const updated = yield Job_listing_1.default.findByIdAndUpdate(id, { $set: { type: obj.type, salary: obj.salary } });
-    // add object to res.send
     return updated;
 });
 exports.updateJob = updateJob;
