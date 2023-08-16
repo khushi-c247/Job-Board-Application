@@ -8,13 +8,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.findJob = exports.newUser = exports.newApplication = exports.jobListing = void 0;
+exports.loginController = exports.getUserController = exports.findJob = exports.newUsercrete = exports.newApplication = exports.jobListing = void 0;
 const jobApplicaionServices_1 = require("../Services/jobApplicaionServices");
-const newUserService_1 = __importDefault(require("../Services/newUserService"));
+const newUserService_1 = require("../Services/newUserService");
 //Job Openinigs
 const jobListing = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const getjobListing = yield (0, jobApplicaionServices_1.getJobListings)();
@@ -29,14 +26,25 @@ const newApplication = (req, res) => __awaiter(void 0, void 0, void 0, function*
 });
 exports.newApplication = newApplication;
 //New User 
-const newUser = (req, res) => {
-    (0, newUserService_1.default)(req.body);
+const newUsercrete = (req, res) => {
+    (0, newUserService_1.createNewUser)(req.body);
     return res.send("User Created!");
 };
-exports.newUser = newUser;
+exports.newUsercrete = newUsercrete;
 //find jobs By id
 const findJob = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const getjobListingId = yield (0, jobApplicaionServices_1.getJobListingsId)(req.params.id);
     return res.send(`Job Openings :${getjobListingId}`);
 });
 exports.findJob = findJob;
+//getUser
+const getUserController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield (0, newUserService_1.getUser)(req.body);
+    res.send(result);
+});
+exports.getUserController = getUserController;
+//loginUser
+const loginController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield (0, newUserService_1.login)(req, res);
+});
+exports.loginController = loginController;

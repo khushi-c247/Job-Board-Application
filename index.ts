@@ -3,8 +3,9 @@ import userRouter from './src/Router/userRouter';
 import adminRouter from './src/Router/adminRouter'
 import {port} from './src/config/env'
 import dbConnection from './src/config/db'
+import passport from './src/config/passport';
 const app: Express = express();
-
+app.use (passport.initialize())
 //mongoDB connection
 dbConnection()
 

@@ -8,7 +8,9 @@ const userRouter_1 = __importDefault(require("./src/Router/userRouter"));
 const adminRouter_1 = __importDefault(require("./src/Router/adminRouter"));
 const env_1 = require("./src/config/env");
 const db_1 = __importDefault(require("./src/config/db"));
+const passport_1 = __importDefault(require("./src/config/passport"));
 const app = (0, express_1.default)();
+app.use(passport_1.default.initialize());
 //mongoDB connection
 (0, db_1.default)();
 //body parsing

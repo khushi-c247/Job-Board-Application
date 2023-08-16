@@ -9,6 +9,10 @@ const user = new mongoose.Schema({
         require: true,
         unique: true
     },
+    password : {
+        type : String,
+        require : true
+    },
     experience: {
         type: Number,
         require: true,

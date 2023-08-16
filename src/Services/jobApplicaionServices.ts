@@ -33,4 +33,5 @@ const getJobListingsId = async (id: string) => {
   return result;
 }
 
-export { createAplication, getJobListings, getJobListingsId } 
+
+export { createAplication,getJobListings, getJobListingsId } 

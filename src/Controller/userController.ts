@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
-import { getJobListings, createAplication ,getJobListingsId} from '../Services/jobApplicaionServices'
-import createNewUser from '../Services/newUserService'
+import { getJobListings, createAplication ,getJobListingsId, } from '../Services/jobApplicaionServices'
+import {createNewUser, getUser , login} from '../Services/newUserService'
+
 
 //Job Openinigs
 const jobListing = async (req: Request, res: Response) => {
@@ -17,7 +18,7 @@ const newApplication = async (req: Request, res: Response) => {
 }
 
 //New User 
-const newUser = (req: Request, res: Response) => {
+const newUsercrete = (req: Request, res: Response) => {
     createNewUser(req.body)
     return res.send("User Created!")
 }
@@ -26,4 +27,20 @@ const findJob =  async (req: Request, res: Response) => {
     const getjobListingId = await getJobListingsId(req.params.id)
     return res.send(`Job Openings :${getjobListingId}`)
 }
-export { jobListing, newApplication, newUser ,findJob }
+
+//getUser
+const getUserController =async (req:Request, res: Response ) => {
+    const result = await getUser(req.body)
+    res.send(result)
+    
+}
+
+//loginUser
+const loginController  =async (req:Request, res: Response) => {
+   
+    return await login(req, res)
+ 
+    
+    
+}
+export { jobListing, newApplication, newUsercrete ,findJob , getUserController, loginController}

@@ -14,6 +14,10 @@ const user = new mongoose_1.default.Schema({
         require: true,
         unique: true
     },
+    password: {
+        type: String,
+        require: true
+    },
     experience: {
         type: Number,
         require: true,

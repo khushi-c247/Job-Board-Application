@@ -1,46 +1,25 @@
 //Interface for Job
 interface jobObj {
-    title: {
-        type: String
-    },
-
-    discription: {
-        type: String,
-    },
-
-    requirements: {
-        type: String,
-    },
-
-    salary: {
-        type: Number,
-    }
+    title: string,
+    discription: string,
+    requirements: String,
+    salary: number
 }
 
 //interface for user object 
 interface newUser {
-    name: {
-        type: String,
-    },
-    email: {
-        type: String,
- 
-    },
-    experience: {
-        type: Number,
-    },
-    discription: {
-        type: String,
-    },
-    graduationYear: {
-        type: Number,
-
-    },
-    appliedTo: {
-        type: [String]
-
-    }
+    name: string
+    email:  String,
+    password : string,
+    experience: number
+    discription: string ,
+    graduationYear:number,
+    appliedTo: [String]
+  
+}
+interface body {
+    email : string , 
+    password : string,
 }
 
-
-export { jobObj, newUser }
+export { jobObj, newUser , body}
