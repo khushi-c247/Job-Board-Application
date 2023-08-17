@@ -5,12 +5,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const userController_1 = require("../Controller/userController");
+const express_validator_1 = require("express-validator");
 const passport_1 = __importDefault(require("../config/passport"));
 const router = express_1.default.Router();
 router.get('/getUser', passport_1.default.authenticate('jwt', { session: false }), userController_1.getUserController);
-router.post('/login', userController_1.loginController);
+router.post('/login', (0, express_validator_1.body)("email").notEmpty(), (0, express_validator_1.body)("password").notEmpty(), userController_1.loginController);
 //User routers
-router.post("/job-application", userController_1.newApplication);
+router.post("/job-application", passport_1.default.authenticate('jwt', { session: false }), userController_1.newApplication);
 router.post("/new-user", userController_1.newUsercrete);
 //serching routers
 router.post("/find-job/:id", userController_1.findJob);

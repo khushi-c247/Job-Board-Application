@@ -19,8 +19,8 @@ const JobModel_1 = __importDefault(require("../Model/JobModel"));
 const applicaintMailer_1 = __importDefault(require("../Mailer/applicaintMailer"));
 //create job application
 const createAplication = (obj) => __awaiter(void 0, void 0, void 0, function* () {
-    yield JobModel_1.default.findByIdAndUpdate(obj.jobId, { $push: { applicantsId: obj.userId } });
-    yield UserModel_1.default.findByIdAndUpdate(obj.userId, { $push: { appliedTo: obj.jobId } });
+    yield JobModel_1.default.findByIdAndUpdate(obj.jobId, { $addToSet: { applicantsId: obj.userId } });
+    yield UserModel_1.default.findByIdAndUpdate(obj.userId, { $addToSet: { appliedTo: obj.jobId } });
     // for mailer
     const userDetails = yield UserModel_1.default.findById(obj.userId);
     const jobDetails = yield JobModel_1.default.findById(obj.jobId);

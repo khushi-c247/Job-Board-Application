@@ -21,15 +21,14 @@ exports.jobListing = jobListing;
 //Job Application
 const newApplication = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, jobApplicaionServices_1.createAplication)(req.body);
-    // console.log(req.body);
     return res.send("Application submited");
 });
 exports.newApplication = newApplication;
 //New User 
-const newUsercrete = (req, res) => {
-    (0, newUserService_1.createNewUser)(req.body);
+const newUsercrete = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    yield (0, newUserService_1.createNewUser)(req.body);
     return res.send("User Created!");
-};
+});
 exports.newUsercrete = newUsercrete;
 //find jobs By id
 const findJob = (req, res) => __awaiter(void 0, void 0, void 0, function* () {

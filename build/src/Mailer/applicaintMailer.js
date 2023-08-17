@@ -16,8 +16,8 @@ const nodemailer_1 = __importDefault(require("nodemailer"));
 const transpoter = nodemailer_1.default.createTransport({
     service: 'Gmail',
     auth: {
-        user: "khushi.c@chapter247.com",
-        pass: "Khushi@0108"
+        user: "k",
+        pass: "K8"
     }
 });
 const mailuser = (mailId, title) => __awaiter(void 0, void 0, void 0, function* () {

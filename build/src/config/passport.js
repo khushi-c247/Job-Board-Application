@@ -14,13 +14,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const passport_1 = __importDefault(require("passport"));
 const passport_jwt_1 = require("passport-jwt");
-// import passportJWT from 'passport-jwt'
 const UserModel_1 = __importDefault(require("../Model/UserModel"));
-// const JwtStrategy = passportJWT.Strategy;
-// const ExtractJwt = passportJWT.ExtractJwt;
+const env_1 = require("../config/env");
 const opts = {};
 opts.jwtFromRequest = passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken();
-opts.secretOrKey = 'secret';
+//in env
+opts.secretOrKey = env_1.key;
 exports.default = passport_1.default.use(new passport_jwt_1.Strategy(opts, function (jwt_payload, done) {
     return __awaiter(this, void 0, void 0, function* () {
         const userpass = yield UserModel_1.default.findOne({ email: jwt_payload.email });

@@ -12,14 +12,12 @@ const jobListing = async (req: Request, res: Response) => {
 //Job Application
 const newApplication = async (req: Request, res: Response) => {  
     await createAplication(req.body)
-    // console.log(req.body);
-    
     return res.send("Application submited")
 }
-
+  
 //New User 
-const newUsercrete = (req: Request, res: Response) => {
-    createNewUser(req.body)
+const newUsercrete = async (req: Request, res: Response) => {
+     await createNewUser(req.body)
     return res.send("User Created!")
 }
 //find jobs By id
@@ -37,10 +35,7 @@ const getUserController =async (req:Request, res: Response ) => {
 
 //loginUser
 const loginController  =async (req:Request, res: Response) => {
-   
-    return await login(req, res)
- 
-    
-    
+  
+    return await login(req, res) 
 }
 export { jobListing, newApplication, newUsercrete ,findJob , getUserController, loginController}

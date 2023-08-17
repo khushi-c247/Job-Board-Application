@@ -1,5 +1,6 @@
+import { job } from "../interfaces/interfaces";
 import mongoose from "mongoose"
-const job = new mongoose.Schema({
+const Job = new mongoose.Schema<job>({
     title: {
         type: String,
         require: true
@@ -20,9 +21,8 @@ const job = new mongoose.Schema({
         require: true
     }, 
     applicantsId: {
-        type: [String],
-
+        type: [String]
     }
 })
 
-export default mongoose.model("job", job)
+export default mongoose.model<job>("Job", Job)

@@ -1,7 +1,6 @@
 import { Request, Response } from 'express'
 import { addjobOpeninigs, updateJob, deleteJob, viewjobOpeninigs, filterdApplications, getApplicants, viewjobByIdOpeninigs }
     from '../Services/OpeningsServices'
-import jobs from '../Model/JobModel'
 //Send all the existig jobs 
 const viewJobsController = async (req: Request, res: Response) => {
     const existingJobs = await viewjobOpeninigs()

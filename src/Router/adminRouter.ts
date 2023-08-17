@@ -1,17 +1,21 @@
 import express from 'express'
-import { addJobsController, updateJobsController, viewJobsController, viewJobsByIdController ,deleteJobsController,filterApplicants, allApplicants} from '../Controller/adminController'
+import { addJobsController, updateJobsController, viewJobsController, viewJobsByIdController, deleteJobsController, filterApplicants, allApplicants } from '../Controller/adminController'
+import authorization from "../Middleware/auth"
+import passport from '../config/passport'
+import {admin} from "../helper/constants"
+
 const router = express.Router()
 
 // Admin Routers
-router.get("/view-job", viewJobsController)
-router.get("view-jobById/:id", viewJobsByIdController)
-router.post('/add-job', addJobsController)
-router.patch('/update-job/:id', updateJobsController)
-router.delete('/delete-job/:id', deleteJobsController)
+router.get("/view-job",passport.authenticate('jwt', { session: false }), authorization(admin), viewJobsController)
+router.get("view-jobById/:id",passport.authenticate('jwt', { session: false }), authorization(admin), viewJobsByIdController)
+router.post('/add-job', passport.authenticate('jwt', { session: false }), authorization(admin), addJobsController)
+router.patch('/update-job/:id',  passport.authenticate('jwt', { session: false }), authorization(admin), updateJobsController)
+router.delete('/delete-job/:id', passport.authenticate('jwt', { session: false }), authorization(admin), deleteJobsController)
 
-//applicaints router
-router.get('/get-applications', allApplicants)
-router.get('/filter-applications/:id', filterApplicants)
+// Applicaints router
+router.get('/get-applications',  passport.authenticate('jwt', { session: false }), authorization(admin), viewJobsController, allApplicants)
+router.get('/filter-applications/:id',  passport.authenticate('jwt', { session: false }), authorization(admin), viewJobsController, filterApplicants)
 
 
 export default router;

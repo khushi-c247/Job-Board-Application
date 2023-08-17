@@ -16,11 +16,8 @@ exports.login = exports.getUser = exports.createNewUser = void 0;
 const UserModel_1 = __importDefault(require("../Model/UserModel"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const express_validator_1 = require("express-validator");
 // Create a new User to DataBase
-// const createNewUser = (obj: newUser) => {
-//     user.create({ name: obj.name, email: obj.email, experience: obj.experience,
-//         discription: obj.discription, graduationYear: obj.graduationYear })
-// }
 const createNewUser = (obj) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         obj.password = yield bcryptjs_1.default.hash(obj.password, 10);
@@ -42,6 +39,11 @@ const getUser = (obj) => __awaiter(void 0, void 0, void 0, function* () {
 exports.getUser = getUser;
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const result = (0, express_validator_1.validationResult)(req);
+        if (!result.isEmpty()) {
+            const arrayOfErr = result.array();
+            return res.send(arrayOfErr[0]);
+        }
         const userReqBody = req.body; // Use the correct type for userReqBody
         const loginUser = yield UserModel_1.default.findOne({ email: userReqBody.email });
         if (!loginUser) {

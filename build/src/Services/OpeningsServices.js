@@ -30,7 +30,7 @@ exports.viewjobByIdOpeninigs = viewjobByIdOpeninigs;
 // Add jobs to the DB 
 const addjobOpeninigs = (obj) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const created = yield JobModel_1.default.create({ title: obj.title, discription: obj.discription, requirements: obj.requirements, salary: obj.salary });
+        const created = yield JobModel_1.default.create(obj);
         return created;
     }
     catch (error) {
