@@ -2,29 +2,29 @@
 interface jobObj {
     title: string,
     discription: string,
-    requirements: String,
+    requirements: string,
     salary: number
 }
-//interface for Role (ADMIN/USER)
 
 //interface for user object 
 interface newUser {
     name: string
-    email:  String,
+    email:  string,
     password : string,
     experience: number
     discription: string ,
     graduationYear:number,
-    appliedTo: [String],
-    role: String
+    appliedTo: [string],
+    role: string
   
 }
-interface body {
+
+interface Loginbody {
     email : string , 
     password : string,
 }
-//Job interface
 
+//Job interface
 interface job
  {
     title : string,
@@ -33,4 +33,4 @@ interface job
     salary: number,
     applicantsId: [string]
  }
-export { jobObj, newUser , body , job}
+export { jobObj, newUser , Loginbody, job}

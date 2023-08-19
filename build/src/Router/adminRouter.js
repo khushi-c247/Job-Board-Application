@@ -15,7 +15,8 @@ router.get("view-jobById/:id", passport_1.default.authenticate('jwt', { session:
 router.post('/add-job', passport_1.default.authenticate('jwt', { session: false }), (0, auth_1.default)(constants_1.admin), adminController_1.addJobsController);
 router.patch('/update-job/:id', passport_1.default.authenticate('jwt', { session: false }), (0, auth_1.default)(constants_1.admin), adminController_1.updateJobsController);
 router.delete('/delete-job/:id', passport_1.default.authenticate('jwt', { session: false }), (0, auth_1.default)(constants_1.admin), adminController_1.deleteJobsController);
-// Applicaints router
-router.get('/get-applications', passport_1.default.authenticate('jwt', { session: false }), (0, auth_1.default)(constants_1.admin), adminController_1.viewJobsController, adminController_1.allApplicants);
+router.get('/getUser', passport_1.default.authenticate('jwt', { session: false }), (0, auth_1.default)(constants_1.admin), adminController_1.getUserController);
+// Applicaints router 
+// router.get('/get-applications',  passport.authenticate('jwt', { session: false }), authorization(admin), viewJobsController, allApplicants)
 router.get('/filter-applications/:id', passport_1.default.authenticate('jwt', { session: false }), (0, auth_1.default)(constants_1.admin), adminController_1.viewJobsController, adminController_1.filterApplicants);
 exports.default = router;

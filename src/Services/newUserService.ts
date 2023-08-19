@@ -1,62 +1,37 @@
 import User from '../Model/UserModel'
-import { newUser , body } from '../interfaces/interfaces'
+import { newUser, Loginbody } from '../interfaces/interfaces'
 import jwt from 'jsonwebtoken'
-import bcrypt from 'bcryptjs' 
-import { Request , Response } from 'express'
-import { validationResult } from 'express-validator'
-
+import bcrypt from 'bcryptjs'
+import { Request, Response } from 'express'
 
 // Create a new User to DataBase
-const createNewUser = async (obj : newUser)=>{
-    try {
-      obj.password = await bcrypt.hash(obj.password ,10)
-        await User.create(obj)
-        return "User Created"
-    } catch (error) {
-        console.log(error);  
-        
-    }
-
-}
-//user get
-const getUser = async (obj: body): Promise <newUser | null> =>{
-    // console.log(authUser);
-    const getUser : newUser | null = await User.findOne({email:obj.email}) 
-    // console.log(getUser);
-    return getUser;
+const createNewUser = async (obj: newUser) => {
+  obj.password = await bcrypt.hash(obj.password, 10)
+  await User.create(obj)
+  return "User Created"
 }
 
-
-
+//Login
 const login = async (req: Request, res: Response) => {
-    try {
-      const result = validationResult(req);
-      if (!result.isEmpty()) {
-        const arrayOfErr = result.array();
-        return res.send(arrayOfErr[0])
-      }
-      const userReqBody: body = req.body; // Use the correct type for userReqBody
-      const loginUser: newUser | null = await User.findOne({ email: userReqBody.email });
+  const userReqBody: Loginbody = req.body; // Use the correct type for userReqBody
   
-      if (!loginUser) {
-        return res.send("User not found");
-      }
-      const passwordMatch = await bcrypt.compare(userReqBody.password, loginUser.password);
-      console.log(loginUser.password, userReqBody.password);
-    
-      if (!passwordMatch) {
-        return res.send("Incorrect password");
-      }
+  const loginUser: newUser | null = await User.findOne({ email: userReqBody.email });
   
-      const token = jwt.sign(
-        { email: loginUser?.email, name: loginUser.name },
-        "secret", 
-        { expiresIn: "1h" }
-      );
-      res.json({ message: "Login successful", token }); 
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "An error occurred" });
-    }
-  };
-export {createNewUser, getUser, login};
+  //Check if user exists
+  if (!loginUser) {
+    return res.send("User not found");
+  }
+
+  //Bycript password and match
+  const passwordMatch = await bcrypt.compare(userReqBody.password, loginUser.password);
+  if (!passwordMatch) {
+    return res.send("Incorrect password");
+  }
+
+  //Generate Token
+  const token = jwt.sign(
+    { email: loginUser?.email, name: loginUser.name }, "secret", { expiresIn: "1" });
+  res.json({ message: "Login successful", token });
+};
+
+export { createNewUser,  login };

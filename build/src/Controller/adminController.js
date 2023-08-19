@@ -9,50 +9,100 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.viewJobsByIdController = exports.filterApplicants = exports.allApplicants = exports.viewJobsController = exports.deleteJobsController = exports.updateJobsController = exports.addJobsController = void 0;
+exports.viewJobsByIdController = exports.filterApplicants = exports.getUserController = exports.viewJobsController = exports.deleteJobsController = exports.updateJobsController = exports.addJobsController = void 0;
 const OpeningsServices_1 = require("../Services/OpeningsServices");
 //Send all the existig jobs 
-const viewJobsController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const existingJobs = yield (0, OpeningsServices_1.viewjobOpeninigs)();
-    return res.status(200).send(existingJobs);
+const viewJobsController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const existingJobs = yield (0, OpeningsServices_1.viewjobOpeninigs)();
+        return res.status(200).send(existingJobs);
+    }
+    catch (error) {
+        console.log(`error in admin Controler`);
+        next(error);
+    }
 });
 exports.viewJobsController = viewJobsController;
-const viewJobsByIdController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const existingJobs = yield (0, OpeningsServices_1.viewjobByIdOpeninigs)(req.params.id);
-    return res.status(200).send(existingJobs);
+const viewJobsByIdController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const existingJobs = yield (0, OpeningsServices_1.viewjobByIdOpeninigs)(req.params.id);
+        return res.status(200).send(existingJobs);
+    }
+    catch (error) {
+        console.log(`error in admin Controler`);
+        next(error);
+    }
 });
 exports.viewJobsByIdController = viewJobsByIdController;
 //Add job Openings
-const addJobsController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const saved = yield (0, OpeningsServices_1.addjobOpeninigs)(req.body);
-    console.log(req.body, saved);
-    return res.status(200).send(`Job saved ${saved}`);
+const addJobsController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const saved = yield (0, OpeningsServices_1.addjobOpeninigs)(req.body);
+        return res.status(200).send(`Job saved ${saved}`);
+    }
+    catch (error) {
+        console.log(`error in admin Controler`);
+        next(error);
+    }
 });
 exports.addJobsController = addJobsController;
 //Edit existing job details
-const updateJobsController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const id = req.params.id;
-    const updated = yield (0, OpeningsServices_1.updateJob)(req.body, id);
-    return res.status(200).send(`Job updated ${updated}`);
+const updateJobsController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const id = req.params.id;
+        const updated = yield (0, OpeningsServices_1.updateJob)(req.body, id);
+        return res.status(200).send(`Job updated ${updated}`);
+    }
+    catch (error) {
+        console.log(`error in admin Controler`);
+        next(error);
+    }
 });
 exports.updateJobsController = updateJobsController;
 //Delete jobs by ID  
-const deleteJobsController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const id = req.params.id;
-    const deleted = yield (0, OpeningsServices_1.deleteJob)(id);
-    // return res.status(200).send(`Job deleted ${deleted}`)
+const deleteJobsController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const id = req.params.id;
+        const deleted = yield (0, OpeningsServices_1.deleteJob)(id);
+        return res.status(200).send(`Job deleted ${deleted}`);
+    }
+    catch (error) {
+        console.log(`error in admin Controler`);
+        next(error);
+    }
 });
 exports.deleteJobsController = deleteJobsController;
-//see all applicatints
-const allApplicants = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const applicants = yield (0, OpeningsServices_1.getApplicants)();
-    console.log(applicants);
-    return res.send(`Job applicaints With Job details ${applicants}`);
+//GetUser
+const getUserController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const result = yield (0, OpeningsServices_1.getUser)(req.body);
+        res.send(result);
+    }
+    catch (error) {
+        console.log("error in user controller");
+        next(error);
+    }
 });
-exports.allApplicants = allApplicants;
+exports.getUserController = getUserController;
+//see all applicatints
+// const allApplicants = async (req: Request, res: Response) => {
+//     try {
+//         // const applicants = await getApplicants()
+//         console.log(applicants);
+//         return res.send(`Job applicaints With Job details ${applicants}`)
+//     }
+//      catch (error) {
+//         console.log(error);
+//     }
+// }
 //get filterd applications by Job id
 const filterApplicants = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const filterd = yield (0, OpeningsServices_1.filterdApplications)(req.params.id);
-    res.send(`Fillterd Applications ${filterd}`);
+    try {
+        const filterd = yield (0, OpeningsServices_1.filterdApplications)(req.params.id);
+        res.send(`Fillterd Applications ${filterd}`);
+    }
+    catch (error) {
+        console.log(error);
+    }
 });
 exports.filterApplicants = filterApplicants;

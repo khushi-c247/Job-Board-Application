@@ -12,54 +12,32 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.login = exports.getUser = exports.createNewUser = void 0;
+exports.login = exports.createNewUser = void 0;
 const UserModel_1 = __importDefault(require("../Model/UserModel"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
-const express_validator_1 = require("express-validator");
 // Create a new User to DataBase
 const createNewUser = (obj) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        obj.password = yield bcryptjs_1.default.hash(obj.password, 10);
-        yield UserModel_1.default.create(obj);
-        return "User Created";
-    }
-    catch (error) {
-        console.log(error);
-    }
+    obj.password = yield bcryptjs_1.default.hash(obj.password, 10);
+    yield UserModel_1.default.create(obj);
+    return "User Created";
 });
 exports.createNewUser = createNewUser;
-//user get
-const getUser = (obj) => __awaiter(void 0, void 0, void 0, function* () {
-    // console.log(authUser);
-    const getUser = yield UserModel_1.default.findOne({ email: obj.email });
-    // console.log(getUser);
-    return getUser;
-});
-exports.getUser = getUser;
+//Login
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const result = (0, express_validator_1.validationResult)(req);
-        if (!result.isEmpty()) {
-            const arrayOfErr = result.array();
-            return res.send(arrayOfErr[0]);
-        }
-        const userReqBody = req.body; // Use the correct type for userReqBody
-        const loginUser = yield UserModel_1.default.findOne({ email: userReqBody.email });
-        if (!loginUser) {
-            return res.send("User not found");
-        }
-        const passwordMatch = yield bcryptjs_1.default.compare(userReqBody.password, loginUser.password);
-        console.log(loginUser.password, userReqBody.password);
-        if (!passwordMatch) {
-            return res.send("Incorrect password");
-        }
-        const token = jsonwebtoken_1.default.sign({ email: loginUser === null || loginUser === void 0 ? void 0 : loginUser.email, name: loginUser.name }, "secret", { expiresIn: "1h" });
-        res.json({ message: "Login successful", token });
+    const userReqBody = req.body; // Use the correct type for userReqBody
+    const loginUser = yield UserModel_1.default.findOne({ email: userReqBody.email });
+    //Check if user exists
+    if (!loginUser) {
+        return res.send("User not found");
     }
-    catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "An error occurred" });
+    //Bycript password and match
+    const passwordMatch = yield bcryptjs_1.default.compare(userReqBody.password, loginUser.password);
+    if (!passwordMatch) {
+        return res.send("Incorrect password");
     }
+    //Generate Token
+    const token = jsonwebtoken_1.default.sign({ email: loginUser === null || loginUser === void 0 ? void 0 : loginUser.email, name: loginUser.name }, "secret", { expiresIn: "1" });
+    res.json({ message: "Login successful", token });
 });
 exports.login = login;

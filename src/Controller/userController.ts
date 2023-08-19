@@ -1,41 +1,83 @@
-import { Request, Response } from 'express'
-import { getJobListings, createAplication ,getJobListingsId, } from '../Services/jobApplicaionServices'
-import {createNewUser, getUser , login} from '../Services/newUserService'
-
+import { NextFunction, Request, Response } from "express";
+import {
+  getJobListings,
+  createAplication,
+  getJobListingsId,
+} from "../Services/jobApplicaionServices";
+import { createNewUser,  login } from "../Services/newUserService";
 
 //Job Openinigs
-const jobListing = async (req: Request, res: Response) => {
-    const getjobListing: object = await getJobListings()
-    return res.send(`Job Openings :${getjobListing}`)
-}
+const jobListing = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const getjobListing = await getJobListings();
+    return res.send(`Job Openings :${getjobListing}`);
+  } catch (error) {
+    console.log("error in user controller");
+    next(error);
+  }
+};
 
 //Job Application
-const newApplication = async (req: Request, res: Response) => {  
-    await createAplication(req.body)
-    return res.send("Application submited")
-}
-  
-//New User 
-const newUsercrete = async (req: Request, res: Response) => {
-     await createNewUser(req.body)
-    return res.send("User Created!")
-}
-//find jobs By id
-const findJob =  async (req: Request, res: Response) => {
-    const getjobListingId = await getJobListingsId(req.params.id)
-    return res.send(`Job Openings :${getjobListingId}`)
-}
+const newApplication = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    await createAplication(req.body);
+    return res.send("Application submited");
+  } catch (error) {
+    console.log("error in user controller");
+    next(error);
+  }
+};
 
-//getUser
-const getUserController =async (req:Request, res: Response ) => {
-    const result = await getUser(req.body)
-    res.send(result)
-    
-}
+//New User
+const newUsercrete = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user = await createNewUser(req.body);
 
-//loginUser
-const loginController  =async (req:Request, res: Response) => {
-  
-    return await login(req, res) 
-}
-export { jobListing, newApplication, newUsercrete ,findJob , getUserController, loginController}
+    return res.send(`User Created! ${user}`);
+  } catch (error) {
+    console.log("error in user controller");
+    next(error);
+  }
+};
+
+//Find jobs By id
+const findJob = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const getjobListingId = await getJobListingsId(req.params.id);
+    return res.send(`Job Openings :${getjobListingId}`);
+  } catch (error) {
+    console.log("error in user controller");
+    next(error);
+  }
+};
+
+
+
+//LoginUser
+const loginController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    return await login(req, res);
+  } catch (error) {
+    console.log("error in user controller");
+    next(error);
+  }
+};
+export {
+  jobListing,
+  newApplication,
+  newUsercrete,
+  findJob,
+  loginController,
+};

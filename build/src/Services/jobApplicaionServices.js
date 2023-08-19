@@ -16,26 +16,29 @@ exports.getJobListingsId = exports.getJobListings = exports.createAplication = v
 // import application from '../Model/AppliModel'
 const UserModel_1 = __importDefault(require("../Model/UserModel"));
 const JobModel_1 = __importDefault(require("../Model/JobModel"));
-const applicaintMailer_1 = __importDefault(require("../Mailer/applicaintMailer"));
 //create job application
 const createAplication = (obj) => __awaiter(void 0, void 0, void 0, function* () {
-    yield JobModel_1.default.findByIdAndUpdate(obj.jobId, { $addToSet: { applicantsId: obj.userId } });
-    yield UserModel_1.default.findByIdAndUpdate(obj.userId, { $addToSet: { appliedTo: obj.jobId } });
+    yield JobModel_1.default.findByIdAndUpdate(obj.jobId, {
+        $addToSet: { applicantsId: obj.userId },
+    });
+    yield UserModel_1.default.findByIdAndUpdate(obj.userId, {
+        $addToSet: { appliedTo: obj.jobId },
+    });
     // for mailer
     const userDetails = yield UserModel_1.default.findById(obj.userId);
     const jobDetails = yield JobModel_1.default.findById(obj.jobId);
     if ((userDetails === null || userDetails === void 0 ? void 0 : userDetails.email) && (jobDetails === null || jobDetails === void 0 ? void 0 : jobDetails.title)) {
-        (0, applicaintMailer_1.default)(userDetails.email, jobDetails.title);
+        // mailuser(userDetails.email,jobDetails.title)
     }
 });
 exports.createAplication = createAplication;
-// get existing job openings from DB  
+// get existing job openings from DB
 const getJobListings = () => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield JobModel_1.default.find();
     return result;
 });
 exports.getJobListings = getJobListings;
-// get existing job openings by id from DB  
+// get existing job openings by id from DB
 const getJobListingsId = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield JobModel_1.default.findById(id);
     return result;

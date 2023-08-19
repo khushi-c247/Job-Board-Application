@@ -9,41 +9,65 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loginController = exports.getUserController = exports.findJob = exports.newUsercrete = exports.newApplication = exports.jobListing = void 0;
+exports.loginController = exports.findJob = exports.newUsercrete = exports.newApplication = exports.jobListing = void 0;
 const jobApplicaionServices_1 = require("../Services/jobApplicaionServices");
 const newUserService_1 = require("../Services/newUserService");
 //Job Openinigs
-const jobListing = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const getjobListing = yield (0, jobApplicaionServices_1.getJobListings)();
-    return res.send(`Job Openings :${getjobListing}`);
+const jobListing = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const getjobListing = yield (0, jobApplicaionServices_1.getJobListings)();
+        return res.send(`Job Openings :${getjobListing}`);
+    }
+    catch (error) {
+        console.log("error in user controller");
+        next(error);
+    }
 });
 exports.jobListing = jobListing;
 //Job Application
-const newApplication = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, jobApplicaionServices_1.createAplication)(req.body);
-    return res.send("Application submited");
+const newApplication = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield (0, jobApplicaionServices_1.createAplication)(req.body);
+        return res.send("Application submited");
+    }
+    catch (error) {
+        console.log("error in user controller");
+        next(error);
+    }
 });
 exports.newApplication = newApplication;
-//New User 
-const newUsercrete = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, newUserService_1.createNewUser)(req.body);
-    return res.send("User Created!");
+//New User
+const newUsercrete = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = yield (0, newUserService_1.createNewUser)(req.body);
+        return res.send(`User Created! ${user}`);
+    }
+    catch (error) {
+        console.log("error in user controller");
+        next(error);
+    }
 });
 exports.newUsercrete = newUsercrete;
-//find jobs By id
-const findJob = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const getjobListingId = yield (0, jobApplicaionServices_1.getJobListingsId)(req.params.id);
-    return res.send(`Job Openings :${getjobListingId}`);
+//Find jobs By id
+const findJob = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const getjobListingId = yield (0, jobApplicaionServices_1.getJobListingsId)(req.params.id);
+        return res.send(`Job Openings :${getjobListingId}`);
+    }
+    catch (error) {
+        console.log("error in user controller");
+        next(error);
+    }
 });
 exports.findJob = findJob;
-//getUser
-const getUserController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield (0, newUserService_1.getUser)(req.body);
-    res.send(result);
-});
-exports.getUserController = getUserController;
-//loginUser
-const loginController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield (0, newUserService_1.login)(req, res);
+//LoginUser
+const loginController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        return yield (0, newUserService_1.login)(req, res);
+    }
+    catch (error) {
+        console.log("error in user controller");
+        next(error);
+    }
 });
 exports.loginController = loginController;
