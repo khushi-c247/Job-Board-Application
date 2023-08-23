@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import {
   getJobListings,
   createAplication,
-  getJobListingsId,
+  getJobListingsId, sorting ,myJobs, serchService
 } from "../Services/jobApplicaionServices";
 import { createNewUser,  login } from "../Services/newUserService";
 
@@ -59,7 +59,16 @@ const findJob = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-
+//Sorting
+const sortController = async (req :Request, res:Response, next:NextFunction)=>{
+  try {
+    const sorted = await sorting(req.body);
+    res.send(sorted)
+  } catch (error) {
+    console.log("error in user controller");
+    next(error)    
+  }   
+}
 
 //LoginUser
 const loginController = async (
@@ -74,10 +83,36 @@ const loginController = async (
     next(error);
   }
 };
+
+const GetmyJobs =async (req:Request, res :Response, next:NextFunction) => {
+  try {
+    const myJob = await myJobs(req.body)
+    res.send(myJob)
+  } catch (error) {
+    console.log("error in GetMy jobs controller");
+    next();
+    
+  }
+}
+
+const serchController = async (req:Request, res :Response, next:NextFunction) => {
+  try {
+      const search = await serchService(req.body)
+      res.send (search)
+      
+  } catch (error) {
+    console.log(error,"error in serchController");
+    next();    
+  }
+}
+
 export {
   jobListing,
   newApplication,
   newUsercrete,
   findJob,
   loginController,
+  sortController,
+  GetmyJobs,
+  serchController
 };

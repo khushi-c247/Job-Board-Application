@@ -80,7 +80,6 @@ const  deleteJob = async (id: string) => {
 // } 
 // catch (error) {
 //    console.log(error);
-   
 // }}
 
 //get fillterd applications by JobID
@@ -107,6 +106,8 @@ const filterdApplications = async (id: string) => {
 const getUser = async (obj: Loginbody): Promise<newUser | null> => {
    const getUser: newUser | null = await User.findOne({ email: obj.email })
    return getUser;
- }
+}
+
+
 
 export { addjobOpeninigs, updateJob, deleteJob, viewjobOpeninigs,getUser, filterdApplications, viewjobByIdOpeninigs }

@@ -18,5 +18,7 @@ router.post("/new-user", userController_1.newUsercrete);
 router.post("/find-job/:id", userController_1.findJob);
 router.get("/job-openings", userController_1.jobListing);
 //filter routers
-router.get('opening');
+router.get('/sort', userController_1.sortController);
+router.get('/search', userController_1.serchController);
+router.get('/getmyJob', userController_1.GetmyJobs);
 exports.default = router;

@@ -1,5 +1,5 @@
 import express from 'express'
-import { jobListing, newApplication, newUsercrete, findJob , loginController} from '../Controller/userController'
+import { jobListing, newApplication, newUsercrete, findJob , loginController, serchController,sortController ,GetmyJobs} from '../Controller/userController'
 import validateMiddleware from '../Middleware/validators'
 import authorization from "../Middleware/auth"
 import {normal} from "../helper/constants"
@@ -17,5 +17,8 @@ router.post("/find-job/:id", findJob)
 router.get("/job-openings", jobListing)
 
 //filter routers
-router.get('opening',)
+router.get('/sort', sortController)
+router.get('/search', serchController )
+
+router.get('/getmyJob', GetmyJobs)
 export default router; 

@@ -1,6 +1,6 @@
 import { newUser } from "../interfaces/interfaces";
-
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
+// import JobModel from "./JobModel";
 const User = new mongoose.Schema<newUser>({
     name: {
         type: String,
@@ -28,13 +28,16 @@ const User = new mongoose.Schema<newUser>({
         require: true
     },
     appliedTo: {
-        type: [String],
+        type: [Schema.Types.ObjectId],
+        ref: "Job"
     },
     role :{
         type : String,
         enum : ["admin" , "normal"],
         default: "normal"
-    }
+    },
+
+  
 })
 // user -> User
 export default mongoose.model<newUser>("User", User)

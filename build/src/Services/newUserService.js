@@ -37,7 +37,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         return res.send("Incorrect password");
     }
     //Generate Token
-    const token = jsonwebtoken_1.default.sign({ email: loginUser === null || loginUser === void 0 ? void 0 : loginUser.email, name: loginUser.name }, "secret", { expiresIn: "1" });
+    const token = jsonwebtoken_1.default.sign({ email: loginUser === null || loginUser === void 0 ? void 0 : loginUser.email, name: loginUser.name }, "secret", { expiresIn: "1h" });
     res.json({ message: "Login successful", token });
 });
 exports.login = login;

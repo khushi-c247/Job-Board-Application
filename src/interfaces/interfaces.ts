@@ -1,3 +1,4 @@
+import mongoose from "mongoose"
 //Interface for Job
 interface jobObj {
     title: string,
@@ -14,8 +15,8 @@ interface newUser {
     experience: number
     discription: string ,
     graduationYear:number,
-    appliedTo: [string],
-    role: string
+    appliedTo: [mongoose.Types.ObjectId],
+    role: string,
   
 }
 
@@ -23,14 +24,30 @@ interface Loginbody {
     email : string , 
     password : string,
 }
-
+// type demoFunction = (result: [], options:object) => void;
+interface demoFunction {
+    paginate(): void;
+}
 //Job interface
-interface job
+interface job extends demoFunction
  {
     title : string,
     discription: string,
     requirements: string,
     salary: number,
-    applicantsId: [string]
+    applicantsId: [mongoose.Types.ObjectId]
+    
  }
-export { jobObj, newUser , Loginbody, job}
+ 
+interface application {
+    userId: string;
+    jobId: string;
+}
+
+
+//Sorting
+interface sorting {
+    colm: string
+    order: number
+}
+export { jobObj, newUser , Loginbody, job, application,sorting }

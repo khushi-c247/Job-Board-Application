@@ -13,8 +13,7 @@ const createNewUser = async (obj: newUser) => {
 
 //Login
 const login = async (req: Request, res: Response) => {
-  const userReqBody: Loginbody = req.body; // Use the correct type for userReqBody
-  
+  const userReqBody: Loginbody = req.body; 
   const loginUser: newUser | null = await User.findOne({ email: userReqBody.email });
   
   //Check if user exists
@@ -30,7 +29,7 @@ const login = async (req: Request, res: Response) => {
 
   //Generate Token
   const token = jwt.sign(
-    { email: loginUser?.email, name: loginUser.name }, "secret", { expiresIn: "1" });
+    { email: loginUser?.email, name: loginUser.name }, "secret", { expiresIn: "1h" });
   res.json({ message: "Login successful", token });
 };
 

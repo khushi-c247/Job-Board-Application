@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loginController = exports.findJob = exports.newUsercrete = exports.newApplication = exports.jobListing = void 0;
+exports.serchController = exports.GetmyJobs = exports.sortController = exports.loginController = exports.findJob = exports.newUsercrete = exports.newApplication = exports.jobListing = void 0;
 const jobApplicaionServices_1 = require("../Services/jobApplicaionServices");
 const newUserService_1 = require("../Services/newUserService");
 //Job Openinigs
@@ -60,6 +60,18 @@ const findJob = (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.findJob = findJob;
+//Sorting
+const sortController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const sorted = yield (0, jobApplicaionServices_1.sorting)(req.body);
+        res.send(sorted);
+    }
+    catch (error) {
+        console.log("error in user controller");
+        next(error);
+    }
+});
+exports.sortController = sortController;
 //LoginUser
 const loginController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -71,3 +83,25 @@ const loginController = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
     }
 });
 exports.loginController = loginController;
+const GetmyJobs = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const myJob = yield (0, jobApplicaionServices_1.myJobs)(req.body);
+        res.send(myJob);
+    }
+    catch (error) {
+        console.log("error in GetMy jobs controller");
+        next();
+    }
+});
+exports.GetmyJobs = GetmyJobs;
+const serchController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const search = yield (0, jobApplicaionServices_1.serchService)(req.body);
+        res.send(search);
+    }
+    catch (error) {
+        console.log(error, "error in serchController");
+        next();
+    }
+});
+exports.serchController = serchController;
