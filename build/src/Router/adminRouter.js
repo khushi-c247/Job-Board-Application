@@ -10,13 +10,11 @@ const passport_1 = __importDefault(require("../config/passport"));
 const constants_1 = require("../helper/constants");
 const router = express_1.default.Router();
 // Admin Routers
-router.get("/view-job", passport_1.default.authenticate('jwt', { session: false }), (0, auth_1.default)(constants_1.admin), adminController_1.viewJobsController);
-router.get("view-jobById/:id", passport_1.default.authenticate('jwt', { session: false }), (0, auth_1.default)(constants_1.admin), adminController_1.viewJobsByIdController);
 router.post('/add-job', passport_1.default.authenticate('jwt', { session: false }), (0, auth_1.default)(constants_1.admin), adminController_1.addJobsController);
 router.patch('/update-job/:id', passport_1.default.authenticate('jwt', { session: false }), (0, auth_1.default)(constants_1.admin), adminController_1.updateJobsController);
 router.delete('/delete-job/:id', passport_1.default.authenticate('jwt', { session: false }), (0, auth_1.default)(constants_1.admin), adminController_1.deleteJobsController);
 router.get('/getUser', passport_1.default.authenticate('jwt', { session: false }), (0, auth_1.default)(constants_1.admin), adminController_1.getUserController);
 // Applicaints router 
 // router.get('/get-applications',  passport.authenticate('jwt', { session: false }), authorization(admin), viewJobsController, allApplicants)
-router.get('/filter-applications/:id', passport_1.default.authenticate('jwt', { session: false }), (0, auth_1.default)(constants_1.admin), adminController_1.viewJobsController, adminController_1.filterApplicants);
+router.get('/filter-applications/:id', passport_1.default.authenticate('jwt', { session: false }), (0, auth_1.default)(constants_1.admin), adminController_1.filterApplicants);
 exports.default = router;

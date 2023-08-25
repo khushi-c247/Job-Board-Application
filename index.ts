@@ -1,6 +1,7 @@
 import express, { Express } from 'express'
 import userRouter from './src/Router/userRouter';
 import adminRouter from './src/Router/adminRouter'
+import commonRouter from './src/Router/commonRouter'
 import {port} from './src/config/env'
 import dbConnection from './src/config/db'
 import passport from './src/config/passport';
@@ -19,6 +20,7 @@ app.use(express.urlencoded());
 //middleware functions
 app.use('/admin', adminRouter);
 app.use('/user', userRouter);
+app.use('/',commonRouter)
 
 //Error Handlers
 app.use(errorHandler);

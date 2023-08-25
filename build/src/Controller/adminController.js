@@ -14,8 +14,8 @@ const OpeningsServices_1 = require("../Services/OpeningsServices");
 //Send all the existig jobs 
 const viewJobsController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const existingJobs = yield (0, OpeningsServices_1.viewjobOpeninigs)();
-        return res.status(200).send(existingJobs);
+        const existingJobs = yield (0, OpeningsServices_1.viewjobOpeninigs)(req.query);
+        return res.status(200).json({ 'Jobs exist in DB': existingJobs });
     }
     catch (error) {
         console.log(`error in admin Controler`);
@@ -23,10 +23,11 @@ const viewJobsController = (req, res, next) => __awaiter(void 0, void 0, void 0,
     }
 });
 exports.viewJobsController = viewJobsController;
+//view by Id
 const viewJobsByIdController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const existingJobs = yield (0, OpeningsServices_1.viewjobByIdOpeninigs)(req.params.id);
-        return res.status(200).send(existingJobs);
+        return res.status(200).json({ 'Job by Id': existingJobs });
     }
     catch (error) {
         console.log(`error in admin Controler`);
@@ -38,7 +39,7 @@ exports.viewJobsByIdController = viewJobsByIdController;
 const addJobsController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const saved = yield (0, OpeningsServices_1.addjobOpeninigs)(req.body);
-        return res.status(200).send(`Job saved ${saved}`);
+        res.status(200).json({ "Job deleted ": saved });
     }
     catch (error) {
         console.log(`error in admin Controler`);
@@ -51,7 +52,7 @@ const updateJobsController = (req, res, next) => __awaiter(void 0, void 0, void 
     try {
         const id = req.params.id;
         const updated = yield (0, OpeningsServices_1.updateJob)(req.body, id);
-        return res.status(200).send(`Job updated ${updated}`);
+        res.status(200).json({ "Job updated": updated });
     }
     catch (error) {
         console.log(`error in admin Controler`);
@@ -64,7 +65,7 @@ const deleteJobsController = (req, res, next) => __awaiter(void 0, void 0, void 
     try {
         const id = req.params.id;
         const deleted = yield (0, OpeningsServices_1.deleteJob)(id);
-        return res.status(200).send(`Job deleted ${deleted}`);
+        return res.status(200).json({ "Job deleted ": deleted });
     }
     catch (error) {
         console.log(`error in admin Controler`);
@@ -76,7 +77,7 @@ exports.deleteJobsController = deleteJobsController;
 const getUserController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const result = yield (0, OpeningsServices_1.getUser)(req.body);
-        res.send(result);
+        res.status(200).json({ "User": result });
     }
     catch (error) {
         console.log("error in user controller");
@@ -99,7 +100,7 @@ exports.getUserController = getUserController;
 const filterApplicants = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const filterd = yield (0, OpeningsServices_1.filterdApplications)(req.params.id);
-        res.send(`Fillterd Applications ${filterd}`);
+        res.status(200).json({ "Filterd applications": filterd });
     }
     catch (error) {
         console.log(error);

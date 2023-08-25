@@ -1,14 +1,29 @@
 import Job from '../Model/JobModel'
 import { jobObj, newUser, Loginbody} from '../interfaces/interfaces'
 import User from '../Model/UserModel'
-
+import {ParsedQs} from 'qs'
 
 
 //View added jobs
-const viewjobOpeninigs = async () => {
+const viewjobOpeninigs = async (obj: ParsedQs) => {
    try {
-      const jobs = await Job.find()
-      return jobs;  
+      const options :object = {
+         page: obj.page,
+         limit: obj.limit
+     };
+      const result = Job.aggregate([
+         {
+            $project : {
+            _id : 0,
+            title: 1,
+            discription :1,
+            requirements :1,
+            salary :1
+         }}
+      ])
+       const response =await Job.aggregatePaginate(result ,options)
+      return response
+      
    } catch (error) {
    console.log(`Error in Opening Services ${error}`);
    }

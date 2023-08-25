@@ -16,10 +16,25 @@ exports.viewjobByIdOpeninigs = exports.filterdApplications = exports.getUser = e
 const JobModel_1 = __importDefault(require("../Model/JobModel"));
 const UserModel_1 = __importDefault(require("../Model/UserModel"));
 //View added jobs
-const viewjobOpeninigs = () => __awaiter(void 0, void 0, void 0, function* () {
+const viewjobOpeninigs = (obj) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const jobs = yield JobModel_1.default.find();
-        return jobs;
+        const options = {
+            page: obj.page,
+            limit: obj.limit
+        };
+        const result = JobModel_1.default.aggregate([
+            {
+                $project: {
+                    _id: 0,
+                    title: 1,
+                    discription: 1,
+                    requirements: 1,
+                    salary: 1
+                }
+            }
+        ]);
+        const response = yield JobModel_1.default.aggregatePaginate(result, options);
+        return response;
     }
     catch (error) {
         console.log(`Error in Opening Services ${error}`);

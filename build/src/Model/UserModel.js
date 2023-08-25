@@ -22,22 +22,35 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
 // import JobModel from "./JobModel";
-const User = new mongoose_1.default.Schema({
+const UserModel = new mongoose_1.default.Schema({
     name: {
         type: String,
-        require: true
+        require: true,
     },
     email: {
         type: String,
         require: true,
-        unique: true
+        unique: true,
     },
     password: {
         type: String,
-        require: true
+        require: true,
     },
     experience: {
         type: Number,
@@ -49,17 +62,53 @@ const User = new mongoose_1.default.Schema({
     },
     graduationYear: {
         type: Number,
-        require: true
+        require: true,
     },
     appliedTo: {
         type: [mongoose_1.Schema.Types.ObjectId],
-        ref: "Job"
+        ref: "Job",
     },
     role: {
         type: String,
         enum: ["admin", "normal"],
-        default: "normal"
+        default: "normal",
     },
 });
-// user -> User
-exports.default = mongoose_1.default.model("User", User);
+UserModel.pre('save', function (next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (!this.isModified('password')) {
+            next();
+        }
+        const salt = yield bcryptjs_1.default.genSalt(10);
+        this.password = yield bcryptjs_1.default.hash(this.password, salt);
+        next;
+    });
+});
+UserModel.pre(['findOneAndUpdate'], function (next) {
+    let update = Object.assign({}, this.getUpdate());
+    console.log();
+    if (update.password) {
+        bcryptjs_1.default.genSalt(10, (err, salt) => {
+            if (err) {
+                console.log(err);
+            }
+            bcryptjs_1.default.hash(update.password, salt, (err, hash) => {
+                if (err) {
+                    console.log(err);
+                }
+                update.password = hash;
+                this.setUpdate(update);
+                next();
+            });
+        });
+    }
+    else {
+        next();
+    }
+});
+UserModel.methods.checkPassword = function (candidatePassword) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return yield bcryptjs_1.default.compare(candidatePassword, this.password);
+    });
+};
+exports.default = mongoose_1.default.model("User", UserModel);

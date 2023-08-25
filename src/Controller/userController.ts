@@ -1,16 +1,17 @@
 import { NextFunction, Request, Response } from "express";
+const multer = require("multer");
 import {
   getJobListings,
   createAplication,
   getJobListingsId, sorting ,myJobs, serchService
 } from "../Services/jobApplicaionServices";
-import { createNewUser,  login } from "../Services/newUserService";
+import { createNewUser,  login, updateUser } from "../Services/newUserService";
 
 //Job Openinigs
 const jobListing = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const getjobListing = await getJobListings();
-    return res.send(`Job Openings :${getjobListing}`);
+    res.status(200).json({"Active job listings:":getjobListing})
   } catch (error) {
     console.log("error in user controller");
     next(error);
@@ -25,7 +26,7 @@ const newApplication = async (
 ) => {
   try {
     await createAplication(req.body);
-    return res.send("Application submited");
+    res.status(200).json({message : "Your application has been submitted!"})
   } catch (error) {
     console.log("error in user controller");
     next(error);
@@ -40,8 +41,7 @@ const newUsercrete = async (
 ) => {
   try {
     const user = await createNewUser(req.body);
-
-    return res.send(`User Created! ${user}`);
+    res.status(200).json({"User created:":user})
   } catch (error) {
     console.log("error in user controller");
     next(error);
@@ -52,7 +52,7 @@ const newUsercrete = async (
 const findJob = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const getjobListingId = await getJobListingsId(req.params.id);
-    return res.send(`Job Openings :${getjobListingId}`);
+    res.status(200).json({"Job listnings:":getjobListingId})
   } catch (error) {
     console.log("error in user controller");
     next(error);
@@ -62,8 +62,8 @@ const findJob = async (req: Request, res: Response, next: NextFunction) => {
 //Sorting
 const sortController = async (req :Request, res:Response, next:NextFunction)=>{
   try {
-    const sorted = await sorting(req.body);
-    res.send(sorted)
+    const sorted = await sorting(req.body , req.query);
+    res.status(200).json({"sorted data:":sorted})
   } catch (error) {
     console.log("error in user controller");
     next(error)    
@@ -87,7 +87,7 @@ const loginController = async (
 const GetmyJobs =async (req:Request, res :Response, next:NextFunction) => {
   try {
     const myJob = await myJobs(req.body)
-    res.send(myJob)
+    res.status(200).json({"You have applied to these following jobs:":myJob})
   } catch (error) {
     console.log("error in GetMy jobs controller");
     next();
@@ -98,13 +98,23 @@ const GetmyJobs =async (req:Request, res :Response, next:NextFunction) => {
 const serchController = async (req:Request, res :Response, next:NextFunction) => {
   try {
       const search = await serchService(req.body)
-      res.send (search)
+      res.status(200).json({"serched data:":search})
       
   } catch (error) {
     console.log(error,"error in serchController");
-    next();    
+    next(error);    
   }
 }
+const updateUserController = async (req: Request, res: Response,  next: NextFunction) => {
+try {
+   await updateUser(req.params.id, req.body)
+  // return updatedUser
+  res.send(200).json({message:" Your password has been changed successfully!"})
+  
+} catch (error) {
+  console.log("error in user controller");
+  next(error);
+}}
 
 export {
   jobListing,
@@ -114,5 +124,6 @@ export {
   loginController,
   sortController,
   GetmyJobs,
-  serchController
+  serchController,
+  updateUserController,
 };

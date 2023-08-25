@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const userRouter_1 = __importDefault(require("./src/Router/userRouter"));
 const adminRouter_1 = __importDefault(require("./src/Router/adminRouter"));
+const commonRouter_1 = __importDefault(require("./src/Router/commonRouter"));
 const env_1 = require("./src/config/env");
 const db_1 = __importDefault(require("./src/config/db"));
 const passport_1 = __importDefault(require("./src/config/passport"));
@@ -21,6 +22,7 @@ app.use(express_1.default.urlencoded());
 //middleware functions
 app.use('/admin', adminRouter_1.default);
 app.use('/user', userRouter_1.default);
+app.use('/', commonRouter_1.default);
 //Error Handlers
 app.use(errorHandler_1.default);
 app.use(errorLast_1.default);

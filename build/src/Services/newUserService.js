@@ -12,31 +12,46 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.login = exports.createNewUser = void 0;
+exports.updateUser = exports.login = exports.createNewUser = void 0;
 const UserModel_1 = __importDefault(require("../Model/UserModel"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const bcryptjs_1 = __importDefault(require("bcryptjs"));
 // Create a new User to DataBase
 const createNewUser = (obj) => __awaiter(void 0, void 0, void 0, function* () {
-    obj.password = yield bcryptjs_1.default.hash(obj.password, 10);
     yield UserModel_1.default.create(obj);
     return "User Created";
 });
 exports.createNewUser = createNewUser;
+//Update an existing User
+const updateUser = (id, obj) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const updated = yield UserModel_1.default.findByIdAndUpdate(id, Object.assign({}, obj));
+        if (!updated) {
+            return "User not found";
+        }
+        return updated;
+    }
+    catch (error) {
+        console.log(error);
+    }
+    return "User Updated";
+});
+exports.updateUser = updateUser;
 //Login
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const userReqBody = req.body; // Use the correct type for userReqBody
-    const loginUser = yield UserModel_1.default.findOne({ email: userReqBody.email });
+    const userReqBody = req.body;
+    const loginUser = yield UserModel_1.default.findOne({
+        email: userReqBody.email,
+    });
     //Check if user exists
     if (!loginUser) {
         return res.send("User not found");
     }
-    //Bycript password and match
-    const passwordMatch = yield bcryptjs_1.default.compare(userReqBody.password, loginUser.password);
+    //Bcrypt password match
+    const passwordMatch = yield loginUser.checkPassword(userReqBody.password);
     if (!passwordMatch) {
-        return res.send("Incorrect password");
+        return res.status(401).json({ message: "You have enterd wrong password!" }); //Chance condition
     }
-    //Generate Token
+    // Generate Token
     const token = jsonwebtoken_1.default.sign({ email: loginUser === null || loginUser === void 0 ? void 0 : loginUser.email, name: loginUser.name }, "secret", { expiresIn: "1h" });
     res.json({ message: "Login successful", token });
 });

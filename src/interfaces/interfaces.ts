@@ -17,6 +17,8 @@ interface newUser {
     graduationYear:number,
     appliedTo: [mongoose.Types.ObjectId],
     role: string,
+    hashPassword: () => void,
+    checkPassword: (password: string) => {};
   
 }
 

@@ -1,24 +1,35 @@
-import express from 'express'
-import { jobListing, newApplication, newUsercrete, findJob , loginController, serchController,sortController ,GetmyJobs} from '../Controller/userController'
-import validateMiddleware from '../Middleware/validators'
-import authorization from "../Middleware/auth"
-import {normal} from "../helper/constants"
-import passport from '../config/passport'
-const router = express.Router()
-
-router.post('/login' , validateMiddleware, loginController)
+import express from "express";
+import {
+  newApplication,
+  updateUserController,
+  GetmyJobs,
+} from "../Controller/userController";
+import validateMiddleware from "../Middleware/validators";
+import authorization from "../Middleware/auth";
+import uploadfile from "../helper/upload";
+import bodyParser from "body-parser";
+import { normal } from "../helper/constants";
+import passport from "../config/passport";
+const router = express.Router();
+router.use(bodyParser.urlencoded({ extended: true }));
 
 //User routers
-router.post("/job-application",passport.authenticate('jwt', {session : false}), authorization(normal), newApplication)
-router.post("/new-user", newUsercrete)
+router.post(     
+  "/job-application",
+  passport.authenticate("jwt", { session: false }),
+  authorization(normal),
+  newApplication
+);
 
-//serching routers 
-router.post("/find-job/:id", findJob)
-router.get("/job-openings", jobListing)
+router.put("/update-user/:id", passport.authenticate("jwt", { session: false }),
+authorization(normal),updateUserController);
 
+//serching routers
+// router.post("/find-job/:id", findJob);
+// router.get("/job-openings", jobListing);
+router.get("/getmyJob", GetmyJobs);
 //filter routers
-router.get('/sort', sortController)
-router.get('/search', serchController )
+//Upload Resumes
+router.post("/resume", uploadfile.array("resume"));
 
-router.get('/getmyJob', GetmyJobs)
-export default router; 
+export default router;

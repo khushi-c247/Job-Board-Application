@@ -1,5 +1,5 @@
 import { job } from "../interfaces/interfaces";
-import mongoose, { Schema } from "mongoose"
+import mongoose, { Schema , AggregatePaginateModel } from "mongoose"
 import mongoosePaginate from "mongoose-aggregate-paginate-v2"
 const Job = new Schema<job>({
     title: {
@@ -26,15 +26,8 @@ const Job = new Schema<job>({
         ref : "User"
     }
 })
-
-// interface AggregatePaginateModel<T extends Document> extends Model<T> {
-//     aggregatePaginate(
-//       query?: mongoose.Aggregate<T>,
-//       options?: PaginateOptions,
-//       callback?: (err: any, result: AggregatePaginateResult<T>) => void
-//     ): Promise<AggregatePaginateResult<T>>;
-//   }
 Job.plugin(mongoosePaginate)
 
-export default mongoose.model<job>("Job", Job)
+
+export default mongoose.model<job,AggregatePaginateModel<job>>("Job", Job);
 

@@ -44,16 +44,17 @@ const getJobListingsId = (id) => __awaiter(void 0, void 0, void 0, function* () 
     return result;
 });
 exports.getJobListingsId = getJobListingsId;
-const sorting = (obj) => __awaiter(void 0, void 0, void 0, function* () {
+const sorting = (obj, queryObj) => __awaiter(void 0, void 0, void 0, function* () {
     // Sort by salary
+    const page = queryObj.page;
+    const limit = queryObj.limit;
     let sort = {};
-    sort = { salary: 1 };
     const colm = obj.colm;
     const order = obj.order;
     if (colm) {
         sort = { [colm]: order };
     }
-    const result = yield JobModel_1.default.aggregate([
+    const result = JobModel_1.default.aggregate([
         { $sort: sort },
         {
             $project: {
@@ -62,11 +63,12 @@ const sorting = (obj) => __awaiter(void 0, void 0, void 0, function* () {
                 salary: 1,
             },
         },
-        {
-            $limit: 5,
-        },
     ]);
-    return result;
+    const options = { page, limit };
+    const response = yield JobModel_1.default.aggregatePaginate(result, options)
+        .then((result) => result)
+        .catch((err) => console.log(err));
+    return response;
 });
 exports.sorting = sorting;
 //Get my jobs
@@ -106,29 +108,39 @@ const serchService = (obj) => __awaiter(void 0, void 0, void 0, function* () {
         });
         filterQuery.$or = or;
     }
-    console.log(filterQuery);
-    const result = yield JobModel_1.default.aggregate([
-        {
-            $match: filterQuery,
-        },
-        {
-            $project: {
+    //Through Offset
+    // const results = await Job.aggregate([
+    //   {
+    //     $match: filterQuery,
+    //   },
+    //   {
+    //     $project: {
+    //       _id: 0,
+    //       title: 1,
+    //       discription: 1,
+    //       requirements: 1,
+    //       salary: 1,
+    //     },
+    //   },
+    //   { $skip: page },
+    //   { $limit: limit },
+    // ]);
+    // return result
+    //Using cursor pagination
+    const results = JobModel_1.default.aggregate([
+        { $match: filterQuery },
+        { $project: {
                 _id: 0,
                 title: 1,
                 discription: 1,
                 requirements: 1,
                 salary: 1,
-            },
-        },
-        // {$skip: page},
-        // {$limit: limit},
+            } }
     ]);
     const options = { page, limit };
-    // console.log("this is result-------->>>",result);
-    const response = yield JobModel_1.default.aggregatePaginate(result, options)
+    const response = yield JobModel_1.default.aggregatePaginate(results, options)
         .then((result) => result)
         .catch((err) => console.log(err));
-    // console.log("this is response pagination------->>>>>",response);
     return response;
 });
 exports.serchService = serchService;
