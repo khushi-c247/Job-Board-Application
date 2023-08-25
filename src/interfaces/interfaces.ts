@@ -52,4 +52,13 @@ interface sorting {
     colm: string
     order: number
 }
-export { jobObj, newUser , Loginbody, job, application,sorting }
+
+interface search {
+    search: string;
+    page: number;
+    limit: number;
+  }
+  interface orInterface {
+    $or: { [x: string]: { $regex: string; $options: string } }[];
+  }
+export { jobObj, newUser , Loginbody, job, application,sorting ,search, orInterface}

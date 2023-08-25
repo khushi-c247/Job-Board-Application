@@ -23,6 +23,10 @@ app.use(express_1.default.urlencoded());
 app.use('/admin', adminRouter_1.default);
 app.use('/user', userRouter_1.default);
 app.use('/', commonRouter_1.default);
+//view engine
+// app.get ('/view' , (req:Request, res:Response) =>{
+//   res.render('demo.pug')
+// })
 //Error Handlers
 app.use(errorHandler_1.default);
 app.use(errorLast_1.default);

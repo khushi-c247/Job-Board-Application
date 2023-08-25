@@ -1,4 +1,4 @@
-import express, { Express } from 'express'
+import express, { Express , Request, Response} from 'express'
 import userRouter from './src/Router/userRouter';
 import adminRouter from './src/Router/adminRouter'
 import commonRouter from './src/Router/commonRouter'
@@ -12,15 +12,19 @@ app.use (passport.initialize())
 
 //mongoDB connection
 dbConnection();
-
 //body parsing
 app.use(express.json());
 app.use(express.urlencoded());
 
 //middleware functions
 app.use('/admin', adminRouter);
-app.use('/user', userRouter);
+app.use('/user', userRouter); 
 app.use('/',commonRouter)
+
+//view engine
+// app.get ('/view' , (req:Request, res:Response) =>{
+//   res.render('demo.pug')
+// })
 
 //Error Handlers
 app.use(errorHandler);

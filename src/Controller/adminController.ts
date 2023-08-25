@@ -28,7 +28,6 @@ const addJobsController = async (req: Request, res: Response, next :NextFunction
     try {
         const saved = await addjobOpeninigs(req.body)
         res.status(200).json({"Job deleted ":saved})
-
     }
     catch (error) {
         console.log(`error in admin Controler`);
@@ -41,7 +40,7 @@ const updateJobsController = async (req: Request, res: Response, next :NextFunct
     try {
         const id: string = req.params.id
         const updated = await updateJob(req.body, id)
-         res.status(200).json({"Job updated" :updated})   
+         return res.status(200).json({"Job updated" :updated})   
     } 
     catch (error) {
         console.log(`error in admin Controler`);

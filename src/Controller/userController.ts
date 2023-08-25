@@ -1,11 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-const multer = require("multer");
 import {
   getJobListings,
   createAplication,
   getJobListingsId, sorting ,myJobs, serchService
 } from "../Services/jobApplicaionServices";
-import { createNewUser,  login, updateUser } from "../Services/newUserService";
+import { createNewUser,  login, updateUser , deleteUser} from "../Services/newUserService";
 
 //Job Openinigs
 const jobListing = async (req: Request, res: Response, next: NextFunction) => {
@@ -25,7 +24,7 @@ const newApplication = async (
   next: NextFunction
 ) => {
   try {
-    await createAplication(req.body);
+    await createAplication(req.user ,req.body);
     res.status(200).json({message : "Your application has been submitted!"})
   } catch (error) {
     console.log("error in user controller");
@@ -84,9 +83,10 @@ const loginController = async (
   }
 };
 
+//
 const GetmyJobs =async (req:Request, res :Response, next:NextFunction) => {
   try {
-    const myJob = await myJobs(req.body)
+    const myJob = await myJobs(req.user,req.body)
     res.status(200).json({"You have applied to these following jobs:":myJob})
   } catch (error) {
     console.log("error in GetMy jobs controller");
@@ -94,7 +94,8 @@ const GetmyJobs =async (req:Request, res :Response, next:NextFunction) => {
     
   }
 }
-
+ 
+//Serching through "title", "discription", "requirements"
 const serchController = async (req:Request, res :Response, next:NextFunction) => {
   try {
       const search = await serchService(req.body)
@@ -105,16 +106,28 @@ const serchController = async (req:Request, res :Response, next:NextFunction) =>
     next(error);    
   }
 }
+
 const updateUserController = async (req: Request, res: Response,  next: NextFunction) => {
 try {
-   await updateUser(req.params.id, req.body)
+   await updateUser(req.user,req.params.id, req.body)
   // return updatedUser
-  res.send(200).json({message:" Your password has been changed successfully!"})
+    res.status(200).json({message:" Your details has been changed successfully!"})
   
 } catch (error) {
   console.log("error in user controller");
   next(error);
 }}
+
+const deleteUserController =async (req: Request, res: Response,  next: NextFunction) => {
+ try {
+    await deleteUser( req.user,req.params.id)
+    res.status(200).json({message:" Your account has been deleted! :("})
+ } catch (error) {
+  console.log(" in user controller delete user");
+  
+  next(error)
+ } 
+}
 
 export {
   jobListing,
@@ -126,4 +139,5 @@ export {
   GetmyJobs,
   serchController,
   updateUserController,
+  deleteUserController
 };

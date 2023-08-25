@@ -52,7 +52,7 @@ const updateJobsController = (req, res, next) => __awaiter(void 0, void 0, void 
     try {
         const id = req.params.id;
         const updated = yield (0, OpeningsServices_1.updateJob)(req.body, id);
-        res.status(200).json({ "Job updated": updated });
+        return res.status(200).json({ "Job updated": updated });
     }
     catch (error) {
         console.log(`error in admin Controler`);

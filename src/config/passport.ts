@@ -22,4 +22,4 @@ async function(jwt_payload, done) {
             return done(null, false, {message : " user not found"});
         }
     
-}));
+})) 

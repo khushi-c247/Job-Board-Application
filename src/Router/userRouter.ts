@@ -3,12 +3,14 @@ import {
   newApplication,
   updateUserController,
   GetmyJobs,
+  loginController,
+  deleteUserController
 } from "../Controller/userController";
 import validateMiddleware from "../Middleware/validators";
 import authorization from "../Middleware/auth";
 import uploadfile from "../helper/upload";
 import bodyParser from "body-parser";
-import { normal } from "../helper/constants";
+import { normal } from "../helper/constants"; 
 import passport from "../config/passport";
 const router = express.Router();
 router.use(bodyParser.urlencoded({ extended: true }));
@@ -20,15 +22,15 @@ router.post(
   authorization(normal),
   newApplication
 );
-
+router.post("/login", validateMiddleware, loginController);
 router.put("/update-user/:id", passport.authenticate("jwt", { session: false }),
 authorization(normal),updateUserController);
+router.delete('/delete/:id',  passport.authenticate("jwt", { session: false }),
+authorization(normal),deleteUserController)
 
-//serching routers
-// router.post("/find-job/:id", findJob);
-// router.get("/job-openings", jobListing);
-router.get("/getmyJob", GetmyJobs);
-//filter routers
+router.get("/getmyJob", passport.authenticate("jwt", { session: false }),
+authorization(normal), GetmyJobs);
+
 //Upload Resumes
 router.post("/resume", uploadfile.array("resume"));
 

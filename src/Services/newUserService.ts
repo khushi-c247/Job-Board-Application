@@ -1,7 +1,6 @@
 import User from "../Model/UserModel";
 import { newUser, Loginbody } from "../interfaces/interfaces";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
 import { Request, Response } from "express";
 
 // Create a new User to DataBase
@@ -11,8 +10,12 @@ const createNewUser = async (obj: newUser) => {
 };
 
 //Update an existing User
-const updateUser = async (id: string, obj: newUser) => {
+const updateUser = async (user: any ,id: string, obj: newUser) => {
   try {
+    
+  if(user._id!=id){    
+     throw new Error("User not match");
+  }
     const updated = await User.findByIdAndUpdate(id, { ...obj });
     if (!updated) {
       return "User not found";
@@ -23,6 +26,20 @@ const updateUser = async (id: string, obj: newUser) => {
   }
   return "User Updated"
 };
+
+const deleteUser =  async (user:any , id :string) => {
+  try {
+    if(user._id!=id){    
+       throw new Error("User not match");
+    }
+    await User.findByIdAndDelete(id)
+    return
+  }
+  catch (error) {
+    console.log(error);
+  }
+
+}
 
 //Login
 const login = async (req: Request, res: Response) => {
@@ -37,6 +54,7 @@ const login = async (req: Request, res: Response) => {
   }
   //Bcrypt password match
   const passwordMatch = await loginUser.checkPassword(userReqBody.password);
+
   if (!passwordMatch) {
     return res.status(401).json({message:"You have enterd wrong password!"}); //Chance condition
   }
@@ -44,9 +62,9 @@ const login = async (req: Request, res: Response) => {
   const token = jwt.sign(
     { email: loginUser?.email, name: loginUser.name },
     "secret",
-    { expiresIn: "1h" }
+    { expiresIn: "1h"}
   );
   res.json({ message: "Login successful", token });
 };
 
-export { createNewUser, login, updateUser };
+export { createNewUser, login, updateUser , deleteUser};

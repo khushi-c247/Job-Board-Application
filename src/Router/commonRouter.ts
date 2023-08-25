@@ -8,7 +8,6 @@ import {
   newUsercrete,
   sortController,
   serchController,
-  GetmyJobs,
   loginController,
 } from "../Controller/userController";
 const router = express.Router();
