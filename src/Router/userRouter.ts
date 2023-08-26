@@ -1,11 +1,11 @@
 import express from "express";
 import {
   newApplication,
-  updateUserController,
-  GetmyJobs,
   loginController,
-  deleteUserController
-} from "../Controller/userController";
+  GetmyJobs,
+  updateUserController,
+  deleteUserController,
+} from "../Controller/index";
 import validateMiddleware from "../Middleware/validators";
 import authorization from "../Middleware/auth";
 import uploadfile from "../helper/upload";

@@ -6,6 +6,9 @@ import {
 } from "../Services/jobApplicaionServices";
 import { createNewUser,  login, updateUser , deleteUser} from "../Services/newUserService";
 
+// import {
+//   getJobListings,createAplication , getJobListingsId, sorting ,myJobs, serchService , createNewUser,  login, updateUser , deleteUser
+// } from '../Services/index'
 //Job Openinigs
 const jobListing = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -86,7 +89,7 @@ const loginController = async (
 //
 const GetmyJobs =async (req:Request, res :Response, next:NextFunction) => {
   try {
-    const myJob = await myJobs(req.user,req.body)
+    const myJob = await myJobs(req.user,req.body.id,req.query)
     res.status(200).json({"You have applied to these following jobs:":myJob})
   } catch (error) {
     console.log("error in GetMy jobs controller");
@@ -95,7 +98,7 @@ const GetmyJobs =async (req:Request, res :Response, next:NextFunction) => {
   }
 }
  
-//Serching through "title", "discription", "requirements"
+//Serching Jobs through "title", "discription", "requirements"
 const serchController = async (req:Request, res :Response, next:NextFunction) => {
   try {
       const search = await serchService(req.body)
@@ -111,7 +114,7 @@ const updateUserController = async (req: Request, res: Response,  next: NextFunc
 try {
    await updateUser(req.user,req.params.id, req.body)
   // return updatedUser
-    res.status(200).json({message:" Your details has been changed successfully!"})
+    res.status(200).json({message:" Your details has been changed successfully! "})
   
 } catch (error) {
   console.log("error in user controller");

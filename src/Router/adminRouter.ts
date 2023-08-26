@@ -2,11 +2,11 @@ import express from "express";
 import {
   addJobsController,
   updateJobsController,
-  viewJobsController,
-  getUserController,
   deleteJobsController,
+  getUserController,
   filterApplicants,
-} from "../Controller/adminController";
+  allApplicants,
+} from "../Controller/index";
 import authorization from "../Middleware/auth";
 import passport from "../config/passport";
 import { admin } from "../helper/constants";
@@ -32,6 +32,8 @@ router.delete(
   authorization(admin),
   deleteJobsController
 );
+
+//TODO:Impliment serch functionality
 router.get(
   "/getUser",
   passport.authenticate("jwt", { session: false }),
@@ -39,10 +41,12 @@ router.get(
   getUserController
 );
 
+//TODO:Impliment serch functionality
 // Applicaints router
-// router.get('/get-applications',  passport.authenticate('jwt', { session: false }), authorization(admin), viewJobsController, allApplicants)
+router.get('/get-applications',  passport.authenticate('jwt', { session: false }), authorization(admin), allApplicants)
+
 router.get(
-  "/filter-applications/:id",
+  "/filter-applications",
   passport.authenticate("jwt", { session: false }),
   authorization(admin),
   filterApplicants

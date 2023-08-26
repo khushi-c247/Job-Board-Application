@@ -1,7 +1,5 @@
-import express, { Express , Request, Response} from 'express'
-import userRouter from './src/Router/userRouter';
-import adminRouter from './src/Router/adminRouter'
-import commonRouter from './src/Router/commonRouter'
+import express, { Express } from 'express'
+import {userRouter, adminRouter, commonRouter} from './src/Router/index';
 import {port} from './src/config/env'
 import dbConnection from './src/config/db'
 import passport from './src/config/passport';

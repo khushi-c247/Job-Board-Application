@@ -57,8 +57,9 @@ interface search {
     search: string;
     page: number;
     limit: number;
+    userId : string
   }
   interface orInterface {
-    $or: { [x: string]: { $regex: string; $options: string } }[];
+    $or: { [x: string]: { $regex: string; $options: string }}[] & { [x: string]:  mongoose.Types.ObjectId }[] ;
   }
 export { jobObj, newUser , Loginbody, job, application,sorting ,search, orInterface}

@@ -12,6 +12,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteUserController = exports.updateUserController = exports.serchController = exports.GetmyJobs = exports.sortController = exports.loginController = exports.findJob = exports.newUsercrete = exports.newApplication = exports.jobListing = void 0;
 const jobApplicaionServices_1 = require("../Services/jobApplicaionServices");
 const newUserService_1 = require("../Services/newUserService");
+// import {
+//   getJobListings,createAplication , getJobListingsId, sorting ,myJobs, serchService , createNewUser,  login, updateUser , deleteUser
+// } from '../Services/index'
 //Job Openinigs
 const jobListing = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -86,7 +89,7 @@ exports.loginController = loginController;
 //
 const GetmyJobs = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const myJob = yield (0, jobApplicaionServices_1.myJobs)(req.user, req.body);
+        const myJob = yield (0, jobApplicaionServices_1.myJobs)(req.user, req.body.id, req.query);
         res.status(200).json({ "You have applied to these following jobs:": myJob });
     }
     catch (error) {
@@ -95,7 +98,7 @@ const GetmyJobs = (req, res, next) => __awaiter(void 0, void 0, void 0, function
     }
 });
 exports.GetmyJobs = GetmyJobs;
-//Serching through "title", "discription", "requirements"
+//Serching Jobs through "title", "discription", "requirements"
 const serchController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const search = yield (0, jobApplicaionServices_1.serchService)(req.body);
@@ -111,7 +114,7 @@ const updateUserController = (req, res, next) => __awaiter(void 0, void 0, void 
     try {
         yield (0, newUserService_1.updateUser)(req.user, req.params.id, req.body);
         // return updatedUser
-        res.status(200).json({ message: " Your details has been changed successfully!" });
+        res.status(200).json({ message: " Your details has been changed successfully! " });
     }
     catch (error) {
         console.log("error in user controller");

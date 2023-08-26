@@ -18,7 +18,8 @@ const JobModel_1 = __importDefault(require("../Model/JobModel"));
 const mongoose_1 = __importDefault(require("mongoose"));
 //create job application
 const createAplication = (user, obj) => __awaiter(void 0, void 0, void 0, function* () {
-    if (user._id !== obj.userId) {
+    console.log(user._id, obj.userId);
+    if (user._id.toString() !== obj.userId) {
         throw new Error("User not match");
     }
     yield JobModel_1.default.findByIdAndUpdate(obj.jobId, {
@@ -75,12 +76,14 @@ const sorting = (obj, queryObj) => __awaiter(void 0, void 0, void 0, function* (
 });
 exports.sorting = sorting;
 //Get my jobs
-const myJobs = (user, id) => __awaiter(void 0, void 0, void 0, function* () {
+const myJobs = (user, id, queryObj) => __awaiter(void 0, void 0, void 0, function* () {
+    const page = queryObj.page;
+    const limit = queryObj.limit;
     try {
-        if (user._id != id) {
+        if (user._id.toString != id) {
             throw new Error("User not match");
         }
-        const result = yield UserModel_1.default.aggregate([
+        const result = UserModel_1.default.aggregate([
             { $match: { _id: new mongoose_1.default.Types.ObjectId(id) } },
             {
                 $lookup: {
@@ -98,7 +101,11 @@ const myJobs = (user, id) => __awaiter(void 0, void 0, void 0, function* () {
                 },
             },
         ]);
-        return result;
+        const options = { page, limit };
+        const response = yield JobModel_1.default.aggregatePaginate(result, options)
+            .then((result) => result)
+            .catch((err) => console.log(err));
+        return response;
     }
     catch (error) {
         console.log(`error in myJobs`);

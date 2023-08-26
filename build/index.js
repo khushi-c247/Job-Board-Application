@@ -4,9 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const userRouter_1 = __importDefault(require("./src/Router/userRouter"));
-const adminRouter_1 = __importDefault(require("./src/Router/adminRouter"));
-const commonRouter_1 = __importDefault(require("./src/Router/commonRouter"));
+const index_1 = require("./src/Router/index");
 const env_1 = require("./src/config/env");
 const db_1 = __importDefault(require("./src/config/db"));
 const passport_1 = __importDefault(require("./src/config/passport"));
@@ -20,9 +18,9 @@ app.use(passport_1.default.initialize());
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded());
 //middleware functions
-app.use('/admin', adminRouter_1.default);
-app.use('/user', userRouter_1.default);
-app.use('/', commonRouter_1.default);
+app.use('/admin', index_1.adminRouter);
+app.use('/user', index_1.userRouter);
+app.use('/', index_1.commonRouter);
 //view engine
 // app.get ('/view' , (req:Request, res:Response) =>{
 //   res.render('demo.pug')

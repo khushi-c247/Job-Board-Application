@@ -12,7 +12,9 @@ import {
 
 //create job application
 const createAplication = async (user: any, obj: application) => {
-  if (user._id !== obj.userId) {
+  console.log(user._id ,obj.userId);
+  
+  if (user._id.toString() !== obj.userId) {
     throw new Error("User not match");
   }
   await Job.findByIdAndUpdate(obj.jobId, {
@@ -69,12 +71,15 @@ const sorting = async (obj: sorting, queryObj: ParsedQs) => {
 };
 
 //Get my jobs
-const myJobs = async (user: any, id: string) => {
+const myJobs = async (user: any, id: string, queryObj :ParsedQs) => {
+  const page = queryObj.page;
+  const limit = queryObj.limit;
+
   try {
-    if (user._id != id) {
+    if (user._id.toString!= id) {
       throw new Error("User not match");
     }
-    const result = await User.aggregate([
+    const result =  User.aggregate([
       { $match: { _id: new mongoose.Types.ObjectId(id) } },
 
       {
@@ -93,7 +98,11 @@ const myJobs = async (user: any, id: string) => {
         },
       },
     ]);
-    return result;
+    const options: object = { page, limit };
+    const response = await Job.aggregatePaginate(result, options)
+      .then((result) => result)
+      .catch((err: Error) => console.log(err));
+    return response;
   } catch (error) {
     console.log(`error in myJobs`);
     return error;

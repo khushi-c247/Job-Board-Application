@@ -12,11 +12,12 @@ const createNewUser = async (obj: newUser) => {
 //Update an existing User
 const updateUser = async (user: any ,id: string, obj: newUser) => {
   try {
-    
-  if(user._id!=id){    
+  if(user._id.toString()!=id){    
      throw new Error("User not match");
   }
     const updated = await User.findByIdAndUpdate(id, { ...obj });
+    console.log(updated);
+    
     if (!updated) {
       return "User not found";
     }
@@ -29,7 +30,7 @@ const updateUser = async (user: any ,id: string, obj: newUser) => {
 
 const deleteUser =  async (user:any , id :string) => {
   try {
-    if(user._id!=id){    
+    if(user._id.toString()!=id){    
        throw new Error("User not match");
     }
     await User.findByIdAndDelete(id)

@@ -1,6 +1,7 @@
 import { NextFunction } from "express";
 import { newUser } from "../interfaces/interfaces";
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema,AggregatePaginateModel } from "mongoose";
+import mongoosePaginate from "mongoose-aggregate-paginate-v2"
 import bcrypt from "bcryptjs";
 
 // import JobModel from "./JobModel";
@@ -75,5 +76,6 @@ else{
 UserModel.methods.checkPassword=  async function (candidatePassword: string){
       return await bcrypt.compare(candidatePassword, this.password);
 }
+UserModel.plugin(mongoosePaginate)
 
-export default mongoose.model<newUser>("User", UserModel);
+export default mongoose.model<newUser,AggregatePaginateModel<newUser>>("User", UserModel);

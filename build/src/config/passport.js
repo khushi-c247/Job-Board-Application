@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const passport_1 = __importDefault(require("passport"));
 const passport_jwt_1 = require("passport-jwt");
 const UserModel_1 = __importDefault(require("../Model/UserModel"));
-const env_1 = require("../config/env");
+const env_1 = require("./env");
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const opts = {};
 opts.jwtFromRequest = passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken();

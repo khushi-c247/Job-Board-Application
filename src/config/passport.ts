@@ -3,7 +3,7 @@ import {Strategy as JwtStrategy ,ExtractJwt} from 'passport-jwt'
 // import passportJWT from 'passport-jwt'
 import { newUser } from '../interfaces/interfaces'
 import User from '../Model/UserModel'
-import {key} from "../config/env"
+import {key} from "./env"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const opts : any= {}
