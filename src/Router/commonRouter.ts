@@ -4,17 +4,20 @@ import {
   newUsercrete,
   loginController,
   sortController,
-  serchController,
+  JobserchController,
   viewJobsByIdController,
 } from "../Controller/index";
 const router = express.Router();
+
+//Routes that anyone can access
 router.post("/login", validateMiddleware, loginController);
 router.post("/new-user", newUsercrete);
-//TODO:same as /serch
+
+// this rout is same as /serch
 // router.get("/view-job", viewJobsController);
 router.get("view-jobById/:id", viewJobsByIdController);
 router.get("/sort", sortController);
 
-router.get("/view-job", serchController);
+router.get("/view-job", JobserchController);
 
 export default router;

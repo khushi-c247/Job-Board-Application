@@ -5,7 +5,7 @@ import {
   getApplicants,
   deleteJob,
   viewjobOpeninigs,
-  getUser,
+  // getUser,
   filterdApplications,
   viewjobByIdOpeninigs,
 } from "../Services/OpeningsServices";
@@ -87,26 +87,26 @@ const deleteJobsController = async (
   }
 };
 //GetUser
-const getUserController = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const result = await getUser(req.body);
-    res.status(200).json({ User: result });
-  } catch (error) {
-    console.log("error in user controller");
-    next(error);
-  }
-};
+// const getUserController = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   try {
+//     const result = await getUser(req.body);
+//     res.status(200).json({ User: result });
+//   } catch (error) {
+//     console.log("error in user controller");
+//     next(error);
+//   }
+// };
 
 // see all applicatints
 const allApplicants = async (req: Request, res: Response) => {
   try {
     const applicants = await getApplicants(req.query);
     // console.log(applicants);
-    return res.status(200).json({'applicatints':applicants})
+    return res.status(200).json({ applicatints: applicants });
   } catch (error) {
     console.log(error);
   }
@@ -127,7 +127,7 @@ export {
   updateJobsController,
   deleteJobsController,
   viewJobsController,
-  getUserController,
+  // getUserController,
   filterApplicants,
   viewJobsByIdController,
   allApplicants,

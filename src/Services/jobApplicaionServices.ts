@@ -7,14 +7,13 @@ import {
   application,
   sorting,
   search,
-  orInterface,
+  orInterface, reqUser
 } from "../interfaces/interfaces";
 
 //create job application
-const createAplication = async (user: any, obj: application) => {
-  console.log(user._id ,obj.userId);
-  
-  if (user._id.toString() !== obj.userId) {
+const createAplication = async (user: reqUser, obj: application) => {
+  const userId = user._id!.toString()
+  if ( userId  !== obj.userId) {
     throw new Error("User not match");
   }
   await Job.findByIdAndUpdate(obj.jobId, {
@@ -31,7 +30,7 @@ const createAplication = async (user: any, obj: application) => {
   }
 };
 
-// get existing job openings from DB
+// get existing job openings from DB 
 const getJobListings = async () => {
   const result = await Job.find();
   return result;
@@ -71,14 +70,11 @@ const sorting = async (obj: sorting, queryObj: ParsedQs) => {
 };
 
 //Get my jobs
-const myJobs = async (user: any, id: string, queryObj :ParsedQs) => {
+const myJobs = async (user: reqUser, queryObj :ParsedQs) => {
   const page = queryObj.page;
   const limit = queryObj.limit;
-
+  const id = user._id!
   try {
-    if (user._id.toString!= id) {
-      throw new Error("User not match");
-    }
     const result =  User.aggregate([
       { $match: { _id: new mongoose.Types.ObjectId(id) } },
 

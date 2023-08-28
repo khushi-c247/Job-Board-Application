@@ -8,6 +8,6 @@ const env_1 = require("./env");
 exports.default = () => {
     mongoose_1.default
         .connect(env_1.DB_URL)
-        .then(() => console.log('DB connected at', { DB_URL: env_1.DB_URL }))
-        .catch(() => console.log('errorin DB'));
+        .then(() => console.log("DB connected at", { DB_URL: env_1.DB_URL }))
+        .catch(() => console.log("errorin DB"));
 };

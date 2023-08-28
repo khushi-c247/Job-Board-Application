@@ -26,8 +26,8 @@ const Job = new Schema<job>({
         ref : "User"
     }
 })
-Job.plugin(mongoosePaginate)
 
+Job.plugin(mongoosePaginate)
 
 export default mongoose.model<job,AggregatePaginateModel<job>>("Job", Job);
 

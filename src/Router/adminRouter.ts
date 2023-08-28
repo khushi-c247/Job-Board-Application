@@ -3,7 +3,7 @@ import {
   addJobsController,
   updateJobsController,
   deleteJobsController,
-  getUserController,
+  // getUserController,
   filterApplicants,
   allApplicants,
 } from "../Controller/index";
@@ -33,18 +33,26 @@ router.delete(
   deleteJobsController
 );
 
-//TODO:Impliment serch functionality
-router.get(
-  "/getUser",
-  passport.authenticate("jwt", { session: false }),
-  authorization(admin),
-  getUserController
-);
+// get user through email
+// router.get(
+//   "/getUser",
+//   passport.authenticate("jwt", { session: false }),
+//   authorization(admin),
+//   getUserController
+// );
 
 //TODO:Impliment serch functionality
 // Applicaints router
-router.get('/get-applications',  passport.authenticate('jwt', { session: false }), authorization(admin), allApplicants)
 
+// Get applicaints
+router.get(
+  "/get-applications",
+  passport.authenticate("jwt", { session: false }),
+  authorization(admin),
+  allApplicants
+);
+
+//can filter out applicaints through "name", "experience", "discription" , "appliedTo"
 router.get(
   "/filter-applications",
   passport.authenticate("jwt", { session: false }),

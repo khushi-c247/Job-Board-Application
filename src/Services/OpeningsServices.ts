@@ -139,9 +139,9 @@ const getApplicants = async (obj: ParsedQs) => {
   
 };
 
-//get fillterd applications by JobID
-const filterdApplications = async (obj: any) => {
-  const { search, page, limit } = obj;
+//get fillterd applications 
+const filterdApplications = async (reqQuery: ParsedQs) => {
+  const { search, page, limit } = reqQuery;
   const colm = ["name", "experience", "discription" , "appliedTo" ];
   const or: { [x: string]: { $regex: string; $options: string } }[]  &{ [x: string]: mongoose.Types.ObjectId  }[] = [];
   const filterQuery: orInterface = { $or: [] };
@@ -159,7 +159,7 @@ const filterdApplications = async (obj: any) => {
     });
     filterQuery.$or = or;
   }
-  const results = await User.aggregate([
+  const results =  User.aggregate([ 
     { $match: filterQuery },
     {$lookup : {
       from :"jobs",
@@ -179,19 +179,22 @@ const filterdApplications = async (obj: any) => {
       },
     },
   ]);
-  console.log(results);
+  // console.log(results); 
   
   const options: object = { page, limit };
-  // const response = await Job.aggregatePaginate(results, options)
-  //   .then((result) => result)
-  //   .catch((err: Error) => console.log(err));
-  // return response;
+  const response = await User.aggregatePaginate(results, options)
+    .then((result) => result)
+    .catch((err: Error) => console.log(err));
+    // console.log(response)
+    
+  return response;
 };
-//User get
-const getUser = async (obj: Loginbody): Promise<newUser | null> => {
-  const getUser: newUser | null = await User.findOne({ email: obj.email });
-  return getUser;
-};
+
+// //User get 
+// const getUser = async (obj: Loginbody): Promise<newUser | null> => {
+//   const getUser: newUser | null = await User.findOne({ email: obj.email });
+//   return getUser;
+// };
 
 export {
   addjobOpeninigs,
@@ -199,7 +202,7 @@ export {
   updateJob,
   deleteJob,
   viewjobOpeninigs,
-  getUser,
+  // getUser,
   filterdApplications,
   viewjobByIdOpeninigs,
 };

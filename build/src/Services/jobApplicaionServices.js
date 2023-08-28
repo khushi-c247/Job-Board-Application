@@ -18,8 +18,8 @@ const JobModel_1 = __importDefault(require("../Model/JobModel"));
 const mongoose_1 = __importDefault(require("mongoose"));
 //create job application
 const createAplication = (user, obj) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(user._id, obj.userId);
-    if (user._id.toString() !== obj.userId) {
+    const userId = user._id.toString();
+    if (userId !== obj.userId) {
         throw new Error("User not match");
     }
     yield JobModel_1.default.findByIdAndUpdate(obj.jobId, {
@@ -36,7 +36,7 @@ const createAplication = (user, obj) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.createAplication = createAplication;
-// get existing job openings from DB
+// get existing job openings from DB 
 const getJobListings = () => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield JobModel_1.default.find();
     return result;
@@ -76,13 +76,11 @@ const sorting = (obj, queryObj) => __awaiter(void 0, void 0, void 0, function* (
 });
 exports.sorting = sorting;
 //Get my jobs
-const myJobs = (user, id, queryObj) => __awaiter(void 0, void 0, void 0, function* () {
+const myJobs = (user, queryObj) => __awaiter(void 0, void 0, void 0, function* () {
     const page = queryObj.page;
     const limit = queryObj.limit;
+    const id = user._id;
     try {
-        if (user._id.toString != id) {
-            throw new Error("User not match");
-        }
         const result = UserModel_1.default.aggregate([
             { $match: { _id: new mongoose_1.default.Types.ObjectId(id) } },
             {

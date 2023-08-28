@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.allApplicants = exports.viewJobsByIdController = exports.filterApplicants = exports.getUserController = exports.viewJobsController = exports.deleteJobsController = exports.updateJobsController = exports.addJobsController = void 0;
+exports.allApplicants = exports.viewJobsByIdController = exports.filterApplicants = exports.viewJobsController = exports.deleteJobsController = exports.updateJobsController = exports.addJobsController = void 0;
 const OpeningsServices_1 = require("../Services/OpeningsServices");
 //Send all the existig jobs
 const viewJobsController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -74,23 +74,25 @@ const deleteJobsController = (req, res, next) => __awaiter(void 0, void 0, void 
 });
 exports.deleteJobsController = deleteJobsController;
 //GetUser
-const getUserController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const result = yield (0, OpeningsServices_1.getUser)(req.body);
-        res.status(200).json({ User: result });
-    }
-    catch (error) {
-        console.log("error in user controller");
-        next(error);
-    }
-});
-exports.getUserController = getUserController;
+// const getUserController = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   try {
+//     const result = await getUser(req.body);
+//     res.status(200).json({ User: result });
+//   } catch (error) {
+//     console.log("error in user controller");
+//     next(error);
+//   }
+// };
 // see all applicatints
 const allApplicants = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const applicants = yield (0, OpeningsServices_1.getApplicants)(req.query);
         // console.log(applicants);
-        return res.status(200).json({ 'applicatints': applicants });
+        return res.status(200).json({ applicatints: applicants });
     }
     catch (error) {
         console.log(error);

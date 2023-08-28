@@ -42,6 +42,8 @@ const UserModel = new mongoose.Schema<newUser>({
   },
 });
 
+
+//while creating user it will bcrypt password
 UserModel.pre('save', async function(next) {
   if (!this.isModified('password')) {
    next()
@@ -50,7 +52,9 @@ UserModel.pre('save', async function(next) {
   this.password = await bcrypt.hash(this.password, salt)
   next
  })
- UserModel.pre(['findOneAndUpdate'] , function (next){
+
+//Update bcrypt password
+UserModel.pre(['findOneAndUpdate'] , function (next){
   let update : any = { ...this.getUpdate()}
   console.log();
 

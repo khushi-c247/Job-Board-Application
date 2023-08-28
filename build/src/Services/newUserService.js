@@ -22,11 +22,9 @@ const createNewUser = (obj) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.createNewUser = createNewUser;
 //Update an existing User
-const updateUser = (user, id, obj) => __awaiter(void 0, void 0, void 0, function* () {
+const updateUser = (user, obj) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        if (user._id.toString() != id) {
-            throw new Error("User not match");
-        }
+        const id = user._id;
         const updated = yield UserModel_1.default.findByIdAndUpdate(id, Object.assign({}, obj));
         console.log(updated);
         if (!updated) {
@@ -40,11 +38,9 @@ const updateUser = (user, id, obj) => __awaiter(void 0, void 0, void 0, function
     return "User Updated";
 });
 exports.updateUser = updateUser;
-const deleteUser = (user, id) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteUser = (user) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        if (user._id.toString() != id) {
-            throw new Error("User not match");
-        }
+        const id = user._id;
         yield UserModel_1.default.findByIdAndDelete(id);
         return;
     }

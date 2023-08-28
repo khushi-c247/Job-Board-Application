@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.viewjobByIdOpeninigs = exports.filterdApplications = exports.getUser = exports.viewjobOpeninigs = exports.deleteJob = exports.updateJob = exports.getApplicants = exports.addjobOpeninigs = void 0;
+exports.viewjobByIdOpeninigs = exports.filterdApplications = exports.viewjobOpeninigs = exports.deleteJob = exports.updateJob = exports.getApplicants = exports.addjobOpeninigs = void 0;
 const JobModel_1 = __importDefault(require("../Model/JobModel"));
 const UserModel_1 = __importDefault(require("../Model/UserModel"));
 //View added jobs
@@ -150,9 +150,9 @@ const getApplicants = (obj) => __awaiter(void 0, void 0, void 0, function* () {
     // console.log(response);
 });
 exports.getApplicants = getApplicants;
-//get fillterd applications by JobID
-const filterdApplications = (obj) => __awaiter(void 0, void 0, void 0, function* () {
-    const { search, page, limit } = obj;
+//get fillterd applications 
+const filterdApplications = (reqQuery) => __awaiter(void 0, void 0, void 0, function* () {
+    const { search, page, limit } = reqQuery;
     const colm = ["name", "experience", "discription", "appliedTo"];
     const or = [];
     const filterQuery = { $or: [] };
@@ -168,7 +168,7 @@ const filterdApplications = (obj) => __awaiter(void 0, void 0, void 0, function*
         });
         filterQuery.$or = or;
     }
-    const results = yield UserModel_1.default.aggregate([
+    const results = UserModel_1.default.aggregate([
         { $match: filterQuery },
         { $lookup: {
                 from: "jobs",
@@ -188,17 +188,12 @@ const filterdApplications = (obj) => __awaiter(void 0, void 0, void 0, function*
             },
         },
     ]);
-    console.log(results);
+    // console.log(results); 
     const options = { page, limit };
-    // const response = await Job.aggregatePaginate(results, options)
-    //   .then((result) => result)
-    //   .catch((err: Error) => console.log(err));
-    // return response;
+    const response = yield UserModel_1.default.aggregatePaginate(results, options)
+        .then((result) => result)
+        .catch((err) => console.log(err));
+    // console.log(response)
+    return response;
 });
 exports.filterdApplications = filterdApplications;
-//User get
-const getUser = (obj) => __awaiter(void 0, void 0, void 0, function* () {
-    const getUser = yield UserModel_1.default.findOne({ email: obj.email });
-    return getUser;
-});
-exports.getUser = getUser;

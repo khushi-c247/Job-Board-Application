@@ -13,10 +13,17 @@ const router = express_1.default.Router();
 router.post("/add-job", passport_1.default.authenticate("jwt", { session: false }), (0, auth_1.default)(constants_1.admin), index_1.addJobsController);
 router.patch("/update-job/:id", passport_1.default.authenticate("jwt", { session: false }), (0, auth_1.default)(constants_1.admin), index_1.updateJobsController);
 router.delete("/delete-job/:id", passport_1.default.authenticate("jwt", { session: false }), (0, auth_1.default)(constants_1.admin), index_1.deleteJobsController);
-//TODO:Impliment serch functionality
-router.get("/getUser", passport_1.default.authenticate("jwt", { session: false }), (0, auth_1.default)(constants_1.admin), index_1.getUserController);
+// get user through email
+// router.get(
+//   "/getUser",
+//   passport.authenticate("jwt", { session: false }),
+//   authorization(admin),
+//   getUserController
+// );
 //TODO:Impliment serch functionality
 // Applicaints router
-router.get('/get-applications', passport_1.default.authenticate('jwt', { session: false }), (0, auth_1.default)(constants_1.admin), index_1.allApplicants);
+// Get applicaints
+router.get("/get-applications", passport_1.default.authenticate("jwt", { session: false }), (0, auth_1.default)(constants_1.admin), index_1.allApplicants);
+//can filter out applicaints through "name", "experience", "discription" , "appliedTo"
 router.get("/filter-applications", passport_1.default.authenticate("jwt", { session: false }), (0, auth_1.default)(constants_1.admin), index_1.filterApplicants);
 exports.default = router;
