@@ -8,7 +8,7 @@ import {
   // getUser,
   filterdApplications,
   viewjobByIdOpeninigs,
-} from "../Services/OpeningsServices";
+} from "../Services/openingsServices";
 
 //Send all the existig jobs
 const viewJobsController = async (

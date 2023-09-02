@@ -19,9 +19,12 @@ import {
   JobserchController,
   updateUserController,
   deleteUserController,
+  forgotPassword,
+  resetPassword
 } from "./userController";
 
 export {
+  resetPassword,
   addJobsController,
   updateJobsController,
   deleteJobsController,
@@ -38,5 +41,6 @@ export {
   GetmyJobs,
   JobserchController,
   updateUserController,
+  forgotPassword,
   deleteUserController,
 };

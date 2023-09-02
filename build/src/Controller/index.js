@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteUserController = exports.updateUserController = exports.JobserchController = exports.GetmyJobs = exports.sortController = exports.loginController = exports.findJob = exports.newUsercrete = exports.newApplication = exports.jobListing = exports.allApplicants = exports.viewJobsByIdController = exports.filterApplicants = exports.viewJobsController = exports.deleteJobsController = exports.updateJobsController = exports.addJobsController = void 0;
+exports.deleteUserController = exports.forgotPassword = exports.updateUserController = exports.JobserchController = exports.GetmyJobs = exports.sortController = exports.loginController = exports.findJob = exports.newUsercrete = exports.newApplication = exports.jobListing = exports.allApplicants = exports.viewJobsByIdController = exports.filterApplicants = exports.viewJobsController = exports.deleteJobsController = exports.updateJobsController = exports.addJobsController = exports.resetPassword = void 0;
 const adminController_1 = require("./adminController");
 Object.defineProperty(exports, "addJobsController", { enumerable: true, get: function () { return adminController_1.addJobsController; } });
 Object.defineProperty(exports, "updateJobsController", { enumerable: true, get: function () { return adminController_1.updateJobsController; } });
@@ -20,3 +20,5 @@ Object.defineProperty(exports, "GetmyJobs", { enumerable: true, get: function ()
 Object.defineProperty(exports, "JobserchController", { enumerable: true, get: function () { return userController_1.JobserchController; } });
 Object.defineProperty(exports, "updateUserController", { enumerable: true, get: function () { return userController_1.updateUserController; } });
 Object.defineProperty(exports, "deleteUserController", { enumerable: true, get: function () { return userController_1.deleteUserController; } });
+Object.defineProperty(exports, "forgotPassword", { enumerable: true, get: function () { return userController_1.forgotPassword; } });
+Object.defineProperty(exports, "resetPassword", { enumerable: true, get: function () { return userController_1.resetPassword; } });

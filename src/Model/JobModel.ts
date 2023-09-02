@@ -4,7 +4,8 @@ import mongoosePaginate from "mongoose-aggregate-paginate-v2"
 const Job = new Schema<job>({
     title: {
         type: String,
-        require: true
+        require: true,
+        unique: true
     },
 
     discription: {

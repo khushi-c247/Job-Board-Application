@@ -2,20 +2,17 @@ import User from "../Model/UserModel";
 import Job from "../Model/JobModel";
 import mongoose from "mongoose";
 import { ParsedQs } from "qs";
-// import mailuser from "../Mailer/applicaintMailer";
+import { mailuser } from "../Mailer/applicaintMailer";
 import {
   application,
   sorting,
   search,
-  orInterface, reqUser
+  orInterface,
+  reqUser,
 } from "../interfaces/interfaces";
 
 //create job application
 const createAplication = async (user: reqUser, obj: application) => {
-  const userId = user._id!.toString()
-  if ( userId  !== obj.userId) {
-    throw new Error("User not match");
-  }
   await Job.findByIdAndUpdate(obj.jobId, {
     $addToSet: { applicantsId: obj.userId },
   });
@@ -23,14 +20,16 @@ const createAplication = async (user: reqUser, obj: application) => {
     $addToSet: { appliedTo: obj.jobId },
   });
   // for mailer
-  const userDetails = await User.findById(obj.userId);
+  const userDetails = await User.findById(user._id);
   const jobDetails = await Job.findById(obj.jobId);
   if (userDetails?.email && jobDetails?.title) {
-    // mailuser(userDetails.email,jobDetails.title)
+    console.log("mail runnning");
+
+    mailuser(userDetails.email, jobDetails.title);
   }
 };
 
-// get existing job openings from DB 
+// get existing job openings from DB
 const getJobListings = async () => {
   const result = await Job.find();
   return result;
@@ -70,12 +69,12 @@ const sorting = async (obj: sorting, queryObj: ParsedQs) => {
 };
 
 //Get my jobs
-const myJobs = async (user: reqUser, queryObj :ParsedQs) => {
+const myJobs = async (user: reqUser, queryObj: ParsedQs) => {
   const page = queryObj.page;
   const limit = queryObj.limit;
-  const id = user._id!
+  const id = user._id!;
   try {
-    const result =  User.aggregate([
+    const result = User.aggregate([
       { $match: { _id: new mongoose.Types.ObjectId(id) } },
 
       {

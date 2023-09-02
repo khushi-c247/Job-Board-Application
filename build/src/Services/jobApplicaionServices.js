@@ -16,12 +16,9 @@ exports.serchService = exports.myJobs = exports.sorting = exports.getJobListings
 const UserModel_1 = __importDefault(require("../Model/UserModel"));
 const JobModel_1 = __importDefault(require("../Model/JobModel"));
 const mongoose_1 = __importDefault(require("mongoose"));
+const applicaintMailer_1 = require("../Mailer/applicaintMailer");
 //create job application
 const createAplication = (user, obj) => __awaiter(void 0, void 0, void 0, function* () {
-    const userId = user._id.toString();
-    if (userId !== obj.userId) {
-        throw new Error("User not match");
-    }
     yield JobModel_1.default.findByIdAndUpdate(obj.jobId, {
         $addToSet: { applicantsId: obj.userId },
     });
@@ -29,14 +26,15 @@ const createAplication = (user, obj) => __awaiter(void 0, void 0, void 0, functi
         $addToSet: { appliedTo: obj.jobId },
     });
     // for mailer
-    const userDetails = yield UserModel_1.default.findById(obj.userId);
+    const userDetails = yield UserModel_1.default.findById(user._id);
     const jobDetails = yield JobModel_1.default.findById(obj.jobId);
     if ((userDetails === null || userDetails === void 0 ? void 0 : userDetails.email) && (jobDetails === null || jobDetails === void 0 ? void 0 : jobDetails.title)) {
-        // mailuser(userDetails.email,jobDetails.title)
+        console.log("mail runnning");
+        (0, applicaintMailer_1.mailuser)(userDetails.email, jobDetails.title);
     }
 });
 exports.createAplication = createAplication;
-// get existing job openings from DB 
+// get existing job openings from DB
 const getJobListings = () => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield JobModel_1.default.find();
     return result;

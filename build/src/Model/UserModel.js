@@ -76,9 +76,9 @@ const UserModel = new mongoose_1.default.Schema({
     },
 });
 //while creating user it will bcrypt password
-UserModel.pre('save', function (next) {
+UserModel.pre("save", function (next) {
     return __awaiter(this, void 0, void 0, function* () {
-        if (!this.isModified('password')) {
+        if (!this.isModified("password")) {
             next();
         }
         const salt = yield bcryptjs_1.default.genSalt(10);
@@ -87,9 +87,9 @@ UserModel.pre('save', function (next) {
     });
 });
 //Update bcrypt password
-UserModel.pre(['findOneAndUpdate'], function (next) {
+UserModel.pre(["findOneAndUpdate"], function (next) {
     let update = Object.assign({}, this.getUpdate());
-    console.log();
+    // console.log(update);
     if (update.password) {
         bcryptjs_1.default.genSalt(10, (err, salt) => {
             if (err) {

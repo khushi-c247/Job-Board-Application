@@ -7,25 +7,28 @@ const express_1 = __importDefault(require("express"));
 const index_1 = require("./src/Router/index");
 const constants_1 = require("./src/helper/constants");
 const env_1 = require("./src/config/env");
-const db_1 = __importDefault(require("./src/config/db"));
+const db_1 = require("./src/config/db");
 const passport_1 = __importDefault(require("./src/config/passport"));
 const errorHandler_1 = __importDefault(require("./src/Middleware/errorHandler"));
 const errorLast_1 = __importDefault(require("./src/Middleware/errorLast"));
 const app = (0, express_1.default)();
 app.use(passport_1.default.initialize());
 //mongoDB connection
-(0, db_1.default)();
+(0, db_1.dbConnection)();
 //body parsing
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded());
 //middleware functions
-app.use(`/${constants_1.versions}/`, index_1.adminRouter);
-app.use(`/${constants_1.versions}/`, index_1.userRouter);
-app.use(`/${constants_1.versions}/`, index_1.commonRouter);
-//view engine
-// app.get ('/view' , (req:Request, res:Response) =>{
-//   res.render('demo.pug')
-// })
+app.use(`/${constants_1.versions}/admin`, index_1.adminRouter);
+app.use(`/${constants_1.versions}/user`, index_1.userRouter);
+app.use(`/${constants_1.versions}`, index_1.commonRouter);
+// view engine
+// app.post ('/view' , (req:Request, res:Response) =>{
+//     res.render('mail.pug')
+//   })
+app.use("*", (req, res) => {
+    res.status(400).json({ message: " 404 URL not found :(" });
+});
 //Error Handlers
 app.use(errorHandler_1.default);
 app.use(errorLast_1.default);

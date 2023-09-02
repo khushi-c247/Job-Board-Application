@@ -9,13 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteUserController = exports.updateUserController = exports.JobserchController = exports.GetmyJobs = exports.sortController = exports.loginController = exports.findJob = exports.newUsercrete = exports.newApplication = exports.jobListing = void 0;
+exports.forgotPassword = exports.deleteUserController = exports.updateUserController = exports.JobserchController = exports.GetmyJobs = exports.sortController = exports.loginController = exports.findJob = exports.newUsercrete = exports.newApplication = exports.jobListing = exports.resetPassword = void 0;
 const jobApplicaionServices_1 = require("../Services/jobApplicaionServices");
 const newUserService_1 = require("../Services/newUserService");
-// import {
-//   getJobListings,createAplication , getJobListingsId, sorting ,myJobs, serchService , createNewUser,  login, updateUser , deleteUser
-// } from '../Services/index'
-//Job Openinigs
 const jobListing = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const getjobListing = yield (0, jobApplicaionServices_1.getJobListings)();
@@ -32,11 +28,12 @@ const newApplication = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
     try {
         let user = req.user;
         yield (0, jobApplicaionServices_1.createAplication)(user, req.body);
-        // res.status(200).json({message : "Your application has been submitted!"})
+        res.status(200).json({ message: "Your application has been submitted!" });
     }
     catch (error) {
         console.log("error in user controller");
-        next(error);
+        // next(error);
+        console.log(error);
     }
 });
 exports.newApplication = newApplication;
@@ -48,7 +45,11 @@ const newUsercrete = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
     }
     catch (error) {
         console.log("error in user controller");
-        next(error);
+        next({
+            err: error,
+            status: 400,
+            message: "You have enterd some wrong details",
+        });
     }
 });
 exports.newUsercrete = newUsercrete;
@@ -60,7 +61,11 @@ const findJob = (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
     }
     catch (error) {
         console.log("error in user controller");
-        next(error);
+        next({
+            err: error,
+            status: 400,
+            message: "You have enterd some wrong details",
+        });
     }
 });
 exports.findJob = findJob;
@@ -72,7 +77,11 @@ const sortController = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
     }
     catch (error) {
         console.log("error in user controller");
-        next(error);
+        next({
+            err: error,
+            status: 400,
+            message: "You have enterd some wrong details",
+        });
     }
 });
 exports.sortController = sortController;
@@ -83,7 +92,11 @@ const loginController = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
     }
     catch (error) {
         console.log("error in user controller");
-        next(error);
+        next({
+            err: error,
+            status: 400,
+            message: "You have enterd some wrong details",
+        });
     }
 });
 exports.loginController = loginController;
@@ -92,11 +105,17 @@ const GetmyJobs = (req, res, next) => __awaiter(void 0, void 0, void 0, function
     try {
         let user = req.user;
         const myJob = yield (0, jobApplicaionServices_1.myJobs)(user, req.query);
-        res.status(200).json({ "You have applied to these following jobs:": myJob });
+        res
+            .status(200)
+            .json({ "You have applied to these following jobs:": myJob });
     }
     catch (error) {
         console.log("error in GetMy jobs controller");
-        next();
+        next({
+            err: error,
+            status: 400,
+            message: "You have enterd some wrong details",
+        });
     }
 });
 exports.GetmyJobs = GetmyJobs;
@@ -108,7 +127,11 @@ const JobserchController = (req, res, next) => __awaiter(void 0, void 0, void 0,
     }
     catch (error) {
         console.log(error, "error in serchController");
-        next(error);
+        next({
+            err: error,
+            status: 400,
+            message: "You have enterd some wrong details",
+        });
     }
 });
 exports.JobserchController = JobserchController;
@@ -117,11 +140,14 @@ const updateUserController = (req, res, next) => __awaiter(void 0, void 0, void 
         let user = req.user;
         yield (0, newUserService_1.updateUser)(user, req.body);
         // return updatedUser
-        res.status(200).json({ message: " Your details has been changed successfully! " });
     }
     catch (error) {
         console.log("error in user controller");
-        next(error);
+        next({
+            err: error,
+            status: 400,
+            message: "You have enterd some wrong details",
+        });
     }
 });
 exports.updateUserController = updateUserController;
@@ -133,7 +159,41 @@ const deleteUserController = (req, res, next) => __awaiter(void 0, void 0, void 
     }
     catch (error) {
         console.log(" in user controller delete user");
-        next(error);
+        next({
+            err: error,
+            status: 400,
+            message: "You have enterd some wrong details",
+        });
     }
 });
 exports.deleteUserController = deleteUserController;
+//ForgotPassword
+const forgotPassword = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const resetPassword = yield (0, newUserService_1.passwordService)(req.body);
+        if (resetPassword) {
+            return res
+                .status(200)
+                .json({ message: " A mail has been sent to your registerd email" });
+        }
+        else {
+            res.render("forget.pug");
+        }
+    }
+    catch (error) {
+        console.log(error);
+        next(error);
+    }
+});
+exports.forgotPassword = forgotPassword;
+const resetPassword = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let user = req.user;
+        const reseted = yield (0, newUserService_1.resetService)(user, req.body);
+        res.render("resetLogin.pug");
+    }
+    catch (error) {
+        next(error);
+    }
+});
+exports.resetPassword = resetPassword;

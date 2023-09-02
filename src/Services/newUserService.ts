@@ -1,21 +1,41 @@
 import User from "../Model/UserModel";
-import { newUser, Loginbody,reqUser } from "../interfaces/interfaces";
+import Job from "../Model/JobModel";
+import { newUser, Loginbody, reqUser, job } from "../interfaces/interfaces";
 import jwt from "jsonwebtoken";
+import { resetPasswordMailer } from "../Mailer/applicaintMailer";
 import { Request, Response } from "express";
 
 // Create a new User to DataBase
 const createNewUser = async (obj: newUser) => {
-  await User.create(obj);
-  return "User Created";
+  const user = await User.create(obj);
+  return user;
+};
+
+//Forgot Password
+const passwordService = async (resetobj: { user: string; email: string }) => {
+  const user = await User.findOne({ email: resetobj.email });
+  if (user) {
+    const token = jwt.sign({ email: resetobj.email }, "secret", {
+      expiresIn: "2h",
+    });
+    resetPasswordMailer(user.name, resetobj.email, token);
+    return true;
+  } else {
+    return false;
+  }
+};
+//Reset password
+const resetService = async (user: reqUser, passwordObj: any) => {
+  const id = user._id!;
+  const userPassword = await User.findByIdAndUpdate(id, { ...passwordObj });
+  return userPassword;
 };
 
 //Update an existing User
-const updateUser = async (user: reqUser ,obj: newUser) => {
-  try { 
-    const id = user._id!
+const updateUser = async (user: reqUser, obj: newUser) => {
+  try {
+    const id = user._id!;
     const updated = await User.findByIdAndUpdate(id, { ...obj });
-    console.log(updated);
-
     if (!updated) {
       return "User not found";
     }
@@ -28,8 +48,18 @@ const updateUser = async (user: reqUser ,obj: newUser) => {
 
 const deleteUser = async (user: reqUser) => {
   try {
-    const id = user._id
-    await User.findByIdAndDelete(id);
+    //   const id = user._id
+    //   const jobs = await Job.aggregate([
+    //     {$match: {applicantsId : id }}
+    //   ])
+
+    //  Job.findByIdAndDelete()
+
+    //   console.log(jobs);
+
+    const res = await Job.find();
+
+    // await User.findByIdAndDelete(id);
     return;
   } catch (error) {
     console.log(error);
@@ -45,7 +75,7 @@ const login = async (req: Request, res: Response) => {
 
   //Check if user exists
   if (!loginUser) {
-    return res.send("User not found");
+    return res.status(401).json({ message: "User not found" });
   }
   //Bcrypt password match
   const passwordMatch = await loginUser.checkPassword(userReqBody.password);
@@ -62,4 +92,11 @@ const login = async (req: Request, res: Response) => {
   res.json({ message: "Login successful", token });
 };
 
-export { createNewUser, login, updateUser, deleteUser };
+export {
+  createNewUser,
+  login,
+  updateUser,
+  deleteUser,
+  passwordService,
+  resetService,
+};

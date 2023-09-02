@@ -1,5 +1,11 @@
 import Job from "../Model/JobModel";
-import { jobObj, newUser, Loginbody, search ,orInterface } from "../interfaces/interfaces";
+import {
+  jobObj,
+  newUser,
+  Loginbody,
+  search,
+  orInterface,
+} from "../interfaces/interfaces";
 import User from "../Model/UserModel";
 import mongoose from "mongoose";
 import { ParsedQs } from "qs";
@@ -112,61 +118,13 @@ const getApplicants = async (obj: ParsedQs) => {
 
   const results = User.aggregate([
     {
-      $lookup : {
-      from :"jobs",
-      localField: "appliedTo",
-      foreignField: "_id",
-      as: "appliedTo",
-    }},
-    { $unwind: "$appliedTo" },
-    {
-      $project: {
-        _id: 0,
-        name: 1,
-        experience: 1,
-        graduationYear: 1,
-        discription: 1,
-        appliedTo  : "$appliedTo.title",
+      $lookup: {
+        from: "jobs",
+        localField: "appliedTo",
+        foreignField: "_id",
+        as: "appliedTo",
       },
     },
-  ]);  
-  const options: object = { page, limit };
-  const response = await User.aggregatePaginate(results, options)
-    .then((result) => result)
-    .catch((err: Error) => console.log(err));
-    return response;
-  // console.log(response);
-  
-};
-
-//get fillterd applications 
-const filterdApplications = async (reqQuery: ParsedQs) => {
-  const { search, page, limit } = reqQuery;
-  const colm = ["name", "experience", "discription" , "appliedTo" ];
-  const or: { [x: string]: { $regex: string; $options: string } }[]  &{ [x: string]: mongoose.Types.ObjectId  }[] = [];
-  const filterQuery: orInterface = { $or: [] };
-  if (typeof search== "string") {
-    let trimStr: string = search.trim();
-    
-      
-    colm.forEach((clm) => {
-      { or.push({
-        [clm]: { $regex: `.*${trimStr}.*`, $options: "i" }
-      });
-    }
-     console.log(or);
-      
-    });
-    filterQuery.$or = or;
-  }
-  const results =  User.aggregate([ 
-    { $match: filterQuery },
-    {$lookup : {
-      from :"jobs",
-      localField: "appliedTo",
-      foreignField: "_id",
-      as: "appliedTo",
-    }},
     { $unwind: "$appliedTo" },
     {
       $project: {
@@ -175,22 +133,72 @@ const filterdApplications = async (reqQuery: ParsedQs) => {
         experience: 1,
         graduationYear: 1,
         discription: 1,
-        appliedTo  : "$appliedTo.title",
+        appliedTo: "$appliedTo.title",
       },
     },
   ]);
-  // console.log(results); 
-  
   const options: object = { page, limit };
   const response = await User.aggregatePaginate(results, options)
     .then((result) => result)
     .catch((err: Error) => console.log(err));
-    // console.log(response)
-    
+  return response;
+  // console.log(response);
+};
+
+//get fillterd applications
+const filterdApplications = async (reqQuery: ParsedQs) => {
+  const { search, page, limit } = reqQuery;
+  const colm = ["name", "experience", "discription", "appliedTo"];
+  const or: { [x: string]: { $regex: string; $options: string } }[] &
+    { [x: string]: mongoose.Types.ObjectId }[] = [];
+  const filterQuery: orInterface = { $or: [] };
+  if (typeof search == "string") {
+    let trimStr: string = search.trim();
+
+    colm.forEach((clm) => {
+      {
+        or.push({
+          [clm]: { $regex: `.*${trimStr}.*`, $options: "i" },
+        });
+      }
+      console.log(or);
+    });
+    filterQuery.$or = or;
+  }
+  const results = User.aggregate([
+    { $match: filterQuery },
+    {
+      $lookup: {
+        from: "jobs",
+        localField: "appliedTo",
+        foreignField: "_id",
+        as: "appliedTo",
+      },
+    },
+    { $unwind: "$appliedTo" },
+    {
+      $project: {
+        _id: 0,
+        name: 1,
+        experience: 1,
+        graduationYear: 1,
+        discription: 1,
+        appliedTo: "$appliedTo.title",
+      },
+    },
+  ]);
+  // console.log(results);
+
+  const options: object = { page, limit };
+  const response = await User.aggregatePaginate(results, options)
+    .then((result) => result)
+    .catch((err: Error) => console.log(err));
+  // console.log(response)
+
   return response;
 };
 
-// //User get 
+// //User get
 // const getUser = async (obj: Loginbody): Promise<newUser | null> => {
 //   const getUser: newUser | null = await User.findOne({ email: obj.email });
 //   return getUser;

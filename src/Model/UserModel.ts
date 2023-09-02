@@ -1,7 +1,7 @@
 import { NextFunction } from "express";
 import { newUser } from "../interfaces/interfaces";
-import mongoose, { Schema,AggregatePaginateModel } from "mongoose";
-import mongoosePaginate from "mongoose-aggregate-paginate-v2"
+import mongoose, { Schema, AggregatePaginateModel } from "mongoose";
+import mongoosePaginate from "mongoose-aggregate-paginate-v2";
 import bcrypt from "bcryptjs";
 
 // import JobModel from "./JobModel";
@@ -42,29 +42,27 @@ const UserModel = new mongoose.Schema<newUser>({
   },
 });
 
-
 //while creating user it will bcrypt password
-UserModel.pre('save', async function(next) {
-  if (!this.isModified('password')) {
-   next()
+UserModel.pre("save", async function (next) {
+  if (!this.isModified("password")) {
+    next();
   }
-  const salt = await bcrypt.genSalt(10)
-  this.password = await bcrypt.hash(this.password, salt)
-  next
- })
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+  next;
+});
 
 //Update bcrypt password
-UserModel.pre(['findOneAndUpdate'] , function (next){
-  let update : any = { ...this.getUpdate()}
-  console.log();
-
-  if(update.password) {
-    bcrypt.genSalt(10, (err, salt )=>{
-      if(err) {
+UserModel.pre(["findOneAndUpdate"], function (next) {
+  let update: any = { ...this.getUpdate() };
+  // console.log(update);
+  if (update.password) {
+    bcrypt.genSalt(10, (err, salt) => {
+      if (err) {
         console.log(err);
       }
-      bcrypt.hash(update.password, salt,(err,hash)=>{
-        if(err) {
+      bcrypt.hash(update.password, salt, (err, hash) => {
+        if (err) {
           console.log(err);
         }
         update.password = hash;
@@ -72,14 +70,17 @@ UserModel.pre(['findOneAndUpdate'] , function (next){
         next();
       });
     });
+  } else {
+    next();
   }
-else{
-  next()
-}})
+});
 
-UserModel.methods.checkPassword=  async function (candidatePassword: string){
-      return await bcrypt.compare(candidatePassword, this.password);
-}
-UserModel.plugin(mongoosePaginate)
+UserModel.methods.checkPassword = async function (candidatePassword: string) {
+  return await bcrypt.compare(candidatePassword, this.password);
+};
+UserModel.plugin(mongoosePaginate);
 
-export default mongoose.model<newUser,AggregatePaginateModel<newUser>>("User", UserModel);
+export default mongoose.model<newUser, AggregatePaginateModel<newUser>>(
+  "User",
+  UserModel
+);

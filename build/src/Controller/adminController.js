@@ -10,11 +10,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.allApplicants = exports.viewJobsByIdController = exports.filterApplicants = exports.viewJobsController = exports.deleteJobsController = exports.updateJobsController = exports.addJobsController = void 0;
-const OpeningsServices_1 = require("../Services/OpeningsServices");
+const openingsServices_1 = require("../Services/openingsServices");
 //Send all the existig jobs
 const viewJobsController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const existingJobs = yield (0, OpeningsServices_1.viewjobOpeninigs)(req.query);
+        const existingJobs = yield (0, openingsServices_1.viewjobOpeninigs)(req.query);
         return res.status(200).json({ "Jobs exist in DB": existingJobs });
     }
     catch (error) {
@@ -26,7 +26,7 @@ exports.viewJobsController = viewJobsController;
 //view by Id
 const viewJobsByIdController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const existingJobs = yield (0, OpeningsServices_1.viewjobByIdOpeninigs)(req.params.id);
+        const existingJobs = yield (0, openingsServices_1.viewjobByIdOpeninigs)(req.params.id);
         return res.status(200).json({ "Job by Id": existingJobs });
     }
     catch (error) {
@@ -38,7 +38,7 @@ exports.viewJobsByIdController = viewJobsByIdController;
 //Add job Openings
 const addJobsController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const saved = yield (0, OpeningsServices_1.addjobOpeninigs)(req.body);
+        const saved = yield (0, openingsServices_1.addjobOpeninigs)(req.body);
         res.status(200).json({ "Job deleted ": saved });
     }
     catch (error) {
@@ -51,7 +51,7 @@ exports.addJobsController = addJobsController;
 const updateJobsController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const id = req.params.id;
-        const updated = yield (0, OpeningsServices_1.updateJob)(req.body, id);
+        const updated = yield (0, openingsServices_1.updateJob)(req.body, id);
         return res.status(200).json({ "Job updated": updated });
     }
     catch (error) {
@@ -64,7 +64,7 @@ exports.updateJobsController = updateJobsController;
 const deleteJobsController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const id = req.params.id;
-        const deleted = yield (0, OpeningsServices_1.deleteJob)(id);
+        const deleted = yield (0, openingsServices_1.deleteJob)(id);
         return res.status(200).json({ "Job deleted ": deleted });
     }
     catch (error) {
@@ -90,7 +90,7 @@ exports.deleteJobsController = deleteJobsController;
 // see all applicatints
 const allApplicants = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const applicants = yield (0, OpeningsServices_1.getApplicants)(req.query);
+        const applicants = yield (0, openingsServices_1.getApplicants)(req.query);
         // console.log(applicants);
         return res.status(200).json({ applicatints: applicants });
     }
@@ -102,7 +102,7 @@ exports.allApplicants = allApplicants;
 //get filterd applications by Job id
 const filterApplicants = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const filterd = yield (0, OpeningsServices_1.filterdApplications)(req.query);
+        const filterd = yield (0, openingsServices_1.filterdApplications)(req.query);
         res.status(200).json({ "Filterd applications": filterd });
     }
     catch (error) {

@@ -128,7 +128,7 @@ const getApplicants = (obj) => __awaiter(void 0, void 0, void 0, function* () {
                 localField: "appliedTo",
                 foreignField: "_id",
                 as: "appliedTo",
-            }
+            },
         },
         { $unwind: "$appliedTo" },
         {
@@ -150,7 +150,7 @@ const getApplicants = (obj) => __awaiter(void 0, void 0, void 0, function* () {
     // console.log(response);
 });
 exports.getApplicants = getApplicants;
-//get fillterd applications 
+//get fillterd applications
 const filterdApplications = (reqQuery) => __awaiter(void 0, void 0, void 0, function* () {
     const { search, page, limit } = reqQuery;
     const colm = ["name", "experience", "discription", "appliedTo"];
@@ -161,7 +161,7 @@ const filterdApplications = (reqQuery) => __awaiter(void 0, void 0, void 0, func
         colm.forEach((clm) => {
             {
                 or.push({
-                    [clm]: { $regex: `.*${trimStr}.*`, $options: "i" }
+                    [clm]: { $regex: `.*${trimStr}.*`, $options: "i" },
                 });
             }
             console.log(or);
@@ -170,12 +170,14 @@ const filterdApplications = (reqQuery) => __awaiter(void 0, void 0, void 0, func
     }
     const results = UserModel_1.default.aggregate([
         { $match: filterQuery },
-        { $lookup: {
+        {
+            $lookup: {
                 from: "jobs",
                 localField: "appliedTo",
                 foreignField: "_id",
                 as: "appliedTo",
-            } },
+            },
+        },
         { $unwind: "$appliedTo" },
         {
             $project: {
@@ -188,7 +190,7 @@ const filterdApplications = (reqQuery) => __awaiter(void 0, void 0, void 0, func
             },
         },
     ]);
-    // console.log(results); 
+    // console.log(results);
     const options = { page, limit };
     const response = yield UserModel_1.default.aggregatePaginate(results, options)
         .then((result) => result)
