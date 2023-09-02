@@ -31,7 +31,8 @@ const mongoose_aggregate_paginate_v2_1 = __importDefault(require("mongoose-aggre
 const Job = new mongoose_1.Schema({
     title: {
         type: String,
-        require: true
+        require: true,
+        unique: true
     },
     discription: {
         type: String,

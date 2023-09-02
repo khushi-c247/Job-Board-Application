@@ -15,7 +15,6 @@ opts.secretOrKey = key;
 export default passport.use(
   new JwtStrategy(
     opts,
-
     async function (jwt_payload, done) {
       const user: newUser | null = await User.findOne({
         email: jwt_payload.email,

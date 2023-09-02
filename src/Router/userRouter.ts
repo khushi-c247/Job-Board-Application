@@ -7,6 +7,7 @@ import {
   JobserchController,
   viewJobsByIdController,
   sortController,
+  resetPassword
 } from "../Controller/index";
 import authorization from "../Middleware/auth";
 import uploadfile from "../helper/upload";
@@ -26,13 +27,11 @@ router.post(
 router.put(
   "/update-user",
   passport.authenticate("jwt", { session: false }),
-  authorization(normal),
   updateUserController
 );
 router.delete(
-  "/delete/:id",
+  "/delete",
   passport.authenticate("jwt", { session: false }),
-  authorization(normal),
   deleteUserController
 );
 
@@ -53,5 +52,10 @@ router.get("/sort", sortController);
 
 //Upload Resumes
 router.post("/resume", uploadfile.array("resume"));
+
+router.put('/reset',passport.authenticate("jwt", { session: false }), resetPassword)
+
+
+
 
 export default router;

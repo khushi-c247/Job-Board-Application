@@ -12,7 +12,9 @@ router.post("/login", validators_1.default, index_1.loginController);
 router.post("/new-user", index_1.newUsercrete);
 // this rout is same as /serch
 // router.get("/view-job", viewJobsController);
-router.get("view-jobById/:id", index_1.viewJobsByIdController);
+router.get("/view-jobById/:id", index_1.viewJobsByIdController);
 router.get("/sort", index_1.sortController);
 router.get("/view-job", index_1.JobserchController);
+//forgot password
+router.post("/forgot-password", index_1.forgotPassword);
 exports.default = router;
