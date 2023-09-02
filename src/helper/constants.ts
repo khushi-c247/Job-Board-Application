@@ -1,3 +1,4 @@
 const admin: string = "admin";
 const normal:string = "normal";
-export {admin, normal}
+const versions : string= 'v1'
+export {admin, normal , versions}

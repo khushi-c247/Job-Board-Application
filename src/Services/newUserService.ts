@@ -1,7 +1,6 @@
 import User from "../Model/UserModel";
-import { newUser, Loginbody } from "../interfaces/interfaces";
+import { newUser, Loginbody,reqUser } from "../interfaces/interfaces";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
 import { Request, Response } from "express";
 
 // Create a new User to DataBase
@@ -11,9 +10,12 @@ const createNewUser = async (obj: newUser) => {
 };
 
 //Update an existing User
-const updateUser = async (id: string, obj: newUser) => {
-  try {
+const updateUser = async (user: reqUser ,obj: newUser) => {
+  try { 
+    const id = user._id!
     const updated = await User.findByIdAndUpdate(id, { ...obj });
+    console.log(updated);
+
     if (!updated) {
       return "User not found";
     }
@@ -21,7 +23,17 @@ const updateUser = async (id: string, obj: newUser) => {
   } catch (error) {
     console.log(error);
   }
-  return "User Updated"
+  return "User Updated";
+};
+
+const deleteUser = async (user: reqUser) => {
+  try {
+    const id = user._id
+    await User.findByIdAndDelete(id);
+    return;
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 //Login
@@ -37,8 +49,9 @@ const login = async (req: Request, res: Response) => {
   }
   //Bcrypt password match
   const passwordMatch = await loginUser.checkPassword(userReqBody.password);
+
   if (!passwordMatch) {
-    return res.status(401).json({message:"You have enterd wrong password!"}); //Chance condition
+    return res.status(401).json({ message: "You have enterd wrong password!" }); //Chance condition
   }
   // Generate Token
   const token = jwt.sign(
@@ -49,4 +62,4 @@ const login = async (req: Request, res: Response) => {
   res.json({ message: "Login successful", token });
 };
 
-export { createNewUser, login, updateUser };
+export { createNewUser, login, updateUser, deleteUser };

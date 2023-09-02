@@ -1,12 +1,21 @@
 import User from "../Model/UserModel";
 import Job from "../Model/JobModel";
-import mongoose ,{AggregatePaginateModel} from "mongoose";
-import {ParsedQs} from 'qs'
+import mongoose from "mongoose";
+import { ParsedQs } from "qs";
 // import mailuser from "../Mailer/applicaintMailer";
-import { application, sorting } from "../interfaces/interfaces";
+import {
+  application,
+  sorting,
+  search,
+  orInterface, reqUser
+} from "../interfaces/interfaces";
 
 //create job application
-const createAplication = async (obj: application) => {
+const createAplication = async (user: reqUser, obj: application) => {
+  const userId = user._id!.toString()
+  if ( userId  !== obj.userId) {
+    throw new Error("User not match");
+  }
   await Job.findByIdAndUpdate(obj.jobId, {
     $addToSet: { applicantsId: obj.userId },
   });
@@ -21,7 +30,7 @@ const createAplication = async (obj: application) => {
   }
 };
 
-// get existing job openings from DB
+// get existing job openings from DB 
 const getJobListings = async () => {
   const result = await Job.find();
   return result;
@@ -33,10 +42,10 @@ const getJobListingsId = async (id: string) => {
   return result;
 };
 
-const sorting = async (obj: sorting , queryObj: ParsedQs) => {
+const sorting = async (obj: sorting, queryObj: ParsedQs) => {
   // Sort by salary
   const page = queryObj.page;
-  const limit =queryObj.limit; 
+  const limit = queryObj.limit;
   let sort = {};
   const colm: string = obj.colm;
   const order: number = obj.order;
@@ -53,47 +62,50 @@ const sorting = async (obj: sorting , queryObj: ParsedQs) => {
       },
     },
   ]);
-  const options : object= { page, limit };
-  const response  = await Job.aggregatePaginate(result , options)
-  .then((result) => result
-  )
-  .catch((err: Error) => console.log(err));
-return response;
-  
+  const options: object = { page, limit };
+  const response = await Job.aggregatePaginate(result, options)
+    .then((result) => result)
+    .catch((err: Error) => console.log(err));
+  return response;
 };
 
 //Get my jobs
-const myJobs = async (id: string) => {
-  const result = await User.aggregate([
-    { $match: { _id: new mongoose.Types.ObjectId(id) } },
+const myJobs = async (user: reqUser, queryObj :ParsedQs) => {
+  const page = queryObj.page;
+  const limit = queryObj.limit;
+  const id = user._id!
+  try {
+    const result =  User.aggregate([
+      { $match: { _id: new mongoose.Types.ObjectId(id) } },
 
-    {
-      $lookup: {
-        from: "jobs",
-        localField: "appliedTo",
-        foreignField: "_id",
-        as: "appliedTo",
+      {
+        $lookup: {
+          from: "jobs",
+          localField: "appliedTo",
+          foreignField: "_id",
+          as: "appliedTo",
+        },
       },
-    },
-    { $unwind: "$appliedTo" },
-    {
-      $project: {
-        title: "$appliedTo.title",
-        _id: 0,
+      { $unwind: "$appliedTo" },
+      {
+        $project: {
+          title: "$appliedTo.title",
+          _id: 0,
+        },
       },
-    },
-  ]);
-  return result;
+    ]);
+    const options: object = { page, limit };
+    const response = await Job.aggregatePaginate(result, options)
+      .then((result) => result)
+      .catch((err: Error) => console.log(err));
+    return response;
+  } catch (error) {
+    console.log(`error in myJobs`);
+    return error;
+  }
 };
 
-interface search {
-  search: string;
-  page: number;
-  limit: number;
-}
-interface orInterface {
-  $or: { [x: string]: { $regex: string; $options: string } }[];
-}
+// Serch service
 const serchService = async (obj: search) => {
   const { search, page, limit } = obj;
   const colm = ["title", "discription", "requirements"];
@@ -128,24 +140,24 @@ const serchService = async (obj: search) => {
   // ]);
   // return result
 
-
   //Using cursor pagination
   const results = Job.aggregate([
-    { $match : filterQuery},
-    {$project: {
-       _id:0,
-       title: 1,
-       discription: 1,
-       requirements: 1,
-       salary: 1,
-    }}
-  ])
-  const options : object= { page, limit };
-    const response  = await Job.aggregatePaginate(results , options)
-      .then((result) => result
-      )
-      .catch((err: Error) => console.log(err));
-    return response;
+    { $match: filterQuery },
+    {
+      $project: {
+        _id: 0,
+        title: 1,
+        discription: 1,
+        requirements: 1,
+        salary: 1,
+      },
+    },
+  ]);
+  const options: object = { page, limit };
+  const response = await Job.aggregatePaginate(results, options)
+    .then((result) => result)
+    .catch((err: Error) => console.log(err));
+  return response;
 };
 
 export {

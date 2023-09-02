@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateUser = exports.login = exports.createNewUser = void 0;
+exports.deleteUser = exports.updateUser = exports.login = exports.createNewUser = void 0;
 const UserModel_1 = __importDefault(require("../Model/UserModel"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 // Create a new User to DataBase
@@ -22,9 +22,11 @@ const createNewUser = (obj) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.createNewUser = createNewUser;
 //Update an existing User
-const updateUser = (id, obj) => __awaiter(void 0, void 0, void 0, function* () {
+const updateUser = (user, obj) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const id = user._id;
         const updated = yield UserModel_1.default.findByIdAndUpdate(id, Object.assign({}, obj));
+        console.log(updated);
         if (!updated) {
             return "User not found";
         }
@@ -36,6 +38,17 @@ const updateUser = (id, obj) => __awaiter(void 0, void 0, void 0, function* () {
     return "User Updated";
 });
 exports.updateUser = updateUser;
+const deleteUser = (user) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const id = user._id;
+        yield UserModel_1.default.findByIdAndDelete(id);
+        return;
+    }
+    catch (error) {
+        console.log(error);
+    }
+});
+exports.deleteUser = deleteUser;
 //Login
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userReqBody = req.body;

@@ -9,10 +9,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateUserController = exports.serchController = exports.GetmyJobs = exports.sortController = exports.loginController = exports.findJob = exports.newUsercrete = exports.newApplication = exports.jobListing = void 0;
-const multer = require("multer");
+exports.deleteUserController = exports.updateUserController = exports.JobserchController = exports.GetmyJobs = exports.sortController = exports.loginController = exports.findJob = exports.newUsercrete = exports.newApplication = exports.jobListing = void 0;
 const jobApplicaionServices_1 = require("../Services/jobApplicaionServices");
 const newUserService_1 = require("../Services/newUserService");
+// import {
+//   getJobListings,createAplication , getJobListingsId, sorting ,myJobs, serchService , createNewUser,  login, updateUser , deleteUser
+// } from '../Services/index'
 //Job Openinigs
 const jobListing = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -28,8 +30,9 @@ exports.jobListing = jobListing;
 //Job Application
 const newApplication = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        yield (0, jobApplicaionServices_1.createAplication)(req.body);
-        res.status(200).json({ message: "Your application has been submitted!" });
+        let user = req.user;
+        yield (0, jobApplicaionServices_1.createAplication)(user, req.body);
+        // res.status(200).json({message : "Your application has been submitted!"})
     }
     catch (error) {
         console.log("error in user controller");
@@ -49,7 +52,7 @@ const newUsercrete = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
     }
 });
 exports.newUsercrete = newUsercrete;
-//Find jobs By id
+//Find jobs By id : REMOVE
 const findJob = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const getjobListingId = yield (0, jobApplicaionServices_1.getJobListingsId)(req.params.id);
@@ -84,9 +87,11 @@ const loginController = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
     }
 });
 exports.loginController = loginController;
+//
 const GetmyJobs = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const myJob = yield (0, jobApplicaionServices_1.myJobs)(req.body);
+        let user = req.user;
+        const myJob = yield (0, jobApplicaionServices_1.myJobs)(user, req.query);
         res.status(200).json({ "You have applied to these following jobs:": myJob });
     }
     catch (error) {
@@ -95,7 +100,8 @@ const GetmyJobs = (req, res, next) => __awaiter(void 0, void 0, void 0, function
     }
 });
 exports.GetmyJobs = GetmyJobs;
-const serchController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+//Serching Jobs through "title", "discription", "requirements"
+const JobserchController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const search = yield (0, jobApplicaionServices_1.serchService)(req.body);
         res.status(200).json({ "serched data:": search });
@@ -105,12 +111,13 @@ const serchController = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
         next(error);
     }
 });
-exports.serchController = serchController;
+exports.JobserchController = JobserchController;
 const updateUserController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        yield (0, newUserService_1.updateUser)(req.params.id, req.body);
+        let user = req.user;
+        yield (0, newUserService_1.updateUser)(user, req.body);
         // return updatedUser
-        res.send(200).json({ message: " Your password has been changed successfully!" });
+        res.status(200).json({ message: " Your details has been changed successfully! " });
     }
     catch (error) {
         console.log("error in user controller");
@@ -118,3 +125,15 @@ const updateUserController = (req, res, next) => __awaiter(void 0, void 0, void 
     }
 });
 exports.updateUserController = updateUserController;
+const deleteUserController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let user = req.user;
+        yield (0, newUserService_1.deleteUser)(user);
+        res.status(200).json({ message: " Your account has been deleted! :(" });
+    }
+    catch (error) {
+        console.log(" in user controller delete user");
+        next(error);
+    }
+});
+exports.deleteUserController = deleteUserController;

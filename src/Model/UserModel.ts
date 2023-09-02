@@ -1,6 +1,7 @@
 import { NextFunction } from "express";
 import { newUser } from "../interfaces/interfaces";
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema,AggregatePaginateModel } from "mongoose";
+import mongoosePaginate from "mongoose-aggregate-paginate-v2"
 import bcrypt from "bcryptjs";
 
 // import JobModel from "./JobModel";
@@ -41,6 +42,8 @@ const UserModel = new mongoose.Schema<newUser>({
   },
 });
 
+
+//while creating user it will bcrypt password
 UserModel.pre('save', async function(next) {
   if (!this.isModified('password')) {
    next()
@@ -49,7 +52,9 @@ UserModel.pre('save', async function(next) {
   this.password = await bcrypt.hash(this.password, salt)
   next
  })
- UserModel.pre(['findOneAndUpdate'] , function (next){
+
+//Update bcrypt password
+UserModel.pre(['findOneAndUpdate'] , function (next){
   let update : any = { ...this.getUpdate()}
   console.log();
 
@@ -75,5 +80,6 @@ else{
 UserModel.methods.checkPassword=  async function (candidatePassword: string){
       return await bcrypt.compare(candidatePassword, this.password);
 }
+UserModel.plugin(mongoosePaginate)
 
-export default mongoose.model<newUser>("User", UserModel);
+export default mongoose.model<newUser,AggregatePaginateModel<newUser>>("User", UserModel);

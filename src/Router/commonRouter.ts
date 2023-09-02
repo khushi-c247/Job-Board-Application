@@ -1,22 +1,23 @@
 import express from "express";
 import validateMiddleware from "../Middleware/validators";
 import {
-  viewJobsByIdController,
-  viewJobsController,
-} from "../Controller/adminController";
-import {
   newUsercrete,
-  sortController,
-  serchController,
-  GetmyJobs,
   loginController,
-} from "../Controller/userController";
+  sortController,
+  JobserchController,
+  viewJobsByIdController,
+} from "../Controller/index";
 const router = express.Router();
+
+//Routes that anyone can access
 router.post("/login", validateMiddleware, loginController);
 router.post("/new-user", newUsercrete);
-router.get("/view-job", viewJobsController);
+
+// this rout is same as /serch
+// router.get("/view-job", viewJobsController);
 router.get("view-jobById/:id", viewJobsByIdController);
 router.get("/sort", sortController);
-router.get("/search", serchController);
+
+router.get("/view-job", JobserchController);
 
 export default router;

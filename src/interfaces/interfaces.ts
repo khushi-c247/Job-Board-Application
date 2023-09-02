@@ -52,4 +52,28 @@ interface sorting {
     colm: string
     order: number
 }
-export { jobObj, newUser , Loginbody, job, application,sorting }
+
+interface search {
+    search: string;
+    page: number;
+    limit: number;
+    userId : string
+  }
+  interface orInterface {
+    $or: { [x: string]: { $regex: string; $options: string }}[] ;
+  }
+
+interface reqUser
+{
+    _id?:mongoose.Types.ObjectId,
+    name?: string,
+    email ?: string,
+    password ?: string,
+    experience ?: number,
+    discription ?: string,
+    graduationYear ?: number,
+    appliedTo ?: mongoose.Types.ObjectId,
+    role ?: string,
+    __v ?: number
+  }
+export { jobObj, newUser , Loginbody, job, application,sorting ,search, orInterface, reqUser}

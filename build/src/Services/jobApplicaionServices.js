@@ -17,7 +17,11 @@ const UserModel_1 = __importDefault(require("../Model/UserModel"));
 const JobModel_1 = __importDefault(require("../Model/JobModel"));
 const mongoose_1 = __importDefault(require("mongoose"));
 //create job application
-const createAplication = (obj) => __awaiter(void 0, void 0, void 0, function* () {
+const createAplication = (user, obj) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = user._id.toString();
+    if (userId !== obj.userId) {
+        throw new Error("User not match");
+    }
     yield JobModel_1.default.findByIdAndUpdate(obj.jobId, {
         $addToSet: { applicantsId: obj.userId },
     });
@@ -32,7 +36,7 @@ const createAplication = (obj) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.createAplication = createAplication;
-// get existing job openings from DB
+// get existing job openings from DB 
 const getJobListings = () => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield JobModel_1.default.find();
     return result;
@@ -72,28 +76,42 @@ const sorting = (obj, queryObj) => __awaiter(void 0, void 0, void 0, function* (
 });
 exports.sorting = sorting;
 //Get my jobs
-const myJobs = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield UserModel_1.default.aggregate([
-        { $match: { _id: new mongoose_1.default.Types.ObjectId(id) } },
-        {
-            $lookup: {
-                from: "jobs",
-                localField: "appliedTo",
-                foreignField: "_id",
-                as: "appliedTo",
+const myJobs = (user, queryObj) => __awaiter(void 0, void 0, void 0, function* () {
+    const page = queryObj.page;
+    const limit = queryObj.limit;
+    const id = user._id;
+    try {
+        const result = UserModel_1.default.aggregate([
+            { $match: { _id: new mongoose_1.default.Types.ObjectId(id) } },
+            {
+                $lookup: {
+                    from: "jobs",
+                    localField: "appliedTo",
+                    foreignField: "_id",
+                    as: "appliedTo",
+                },
             },
-        },
-        { $unwind: "$appliedTo" },
-        {
-            $project: {
-                title: "$appliedTo.title",
-                _id: 0,
+            { $unwind: "$appliedTo" },
+            {
+                $project: {
+                    title: "$appliedTo.title",
+                    _id: 0,
+                },
             },
-        },
-    ]);
-    return result;
+        ]);
+        const options = { page, limit };
+        const response = yield JobModel_1.default.aggregatePaginate(result, options)
+            .then((result) => result)
+            .catch((err) => console.log(err));
+        return response;
+    }
+    catch (error) {
+        console.log(`error in myJobs`);
+        return error;
+    }
 });
 exports.myJobs = myJobs;
+// Serch service
 const serchService = (obj) => __awaiter(void 0, void 0, void 0, function* () {
     const { search, page, limit } = obj;
     const colm = ["title", "discription", "requirements"];
@@ -129,13 +147,15 @@ const serchService = (obj) => __awaiter(void 0, void 0, void 0, function* () {
     //Using cursor pagination
     const results = JobModel_1.default.aggregate([
         { $match: filterQuery },
-        { $project: {
+        {
+            $project: {
                 _id: 0,
                 title: 1,
                 discription: 1,
                 requirements: 1,
                 salary: 1,
-            } }
+            },
+        },
     ]);
     const options = { page, limit };
     const response = yield JobModel_1.default.aggregatePaginate(results, options)

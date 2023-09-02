@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.viewjobByIdOpeninigs = exports.filterdApplications = exports.getUser = exports.viewjobOpeninigs = exports.deleteJob = exports.updateJob = exports.addjobOpeninigs = void 0;
+exports.viewjobByIdOpeninigs = exports.filterdApplications = exports.viewjobOpeninigs = exports.deleteJob = exports.updateJob = exports.getApplicants = exports.addjobOpeninigs = void 0;
 const JobModel_1 = __importDefault(require("../Model/JobModel"));
 const UserModel_1 = __importDefault(require("../Model/UserModel"));
 //View added jobs
@@ -20,7 +20,7 @@ const viewjobOpeninigs = (obj) => __awaiter(void 0, void 0, void 0, function* ()
     try {
         const options = {
             page: obj.page,
-            limit: obj.limit
+            limit: obj.limit,
         };
         const result = JobModel_1.default.aggregate([
             {
@@ -29,9 +29,9 @@ const viewjobOpeninigs = (obj) => __awaiter(void 0, void 0, void 0, function* ()
                     title: 1,
                     discription: 1,
                     requirements: 1,
-                    salary: 1
-                }
-            }
+                    salary: 1,
+                },
+            },
         ]);
         const response = yield JobModel_1.default.aggregatePaginate(result, options);
         return response;
@@ -52,7 +52,7 @@ const viewjobByIdOpeninigs = (id) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.viewjobByIdOpeninigs = viewjobByIdOpeninigs;
-// Add jobs to the DB 
+// Add jobs to the DB
 const addjobOpeninigs = (obj) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const created = yield JobModel_1.default.create(obj);
@@ -66,7 +66,14 @@ exports.addjobOpeninigs = addjobOpeninigs;
 //update jobs
 const updateJob = (obj, id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const updated = yield JobModel_1.default.findByIdAndUpdate(id, { $set: { title: obj.title, salary: obj.salary, discription: obj.discription, requirements: obj.requirements } });
+        const updated = yield JobModel_1.default.findByIdAndUpdate(id, {
+            $set: {
+                title: obj.title,
+                salary: obj.salary,
+                discription: obj.discription,
+                requirements: obj.requirements,
+            },
+        });
         return updated;
     }
     catch (error) {
@@ -87,50 +94,106 @@ const deleteJob = (id) => __awaiter(void 0, void 0, void 0, function* () {
 exports.deleteJob = deleteJob;
 //get Applicants
 // const getApplicants = async () => {
-// try {
-//    const applicaints = await Job.find();
-//    let allDetails: Object[] = [];
-//    let noApplicationDetails: Object[] = [];
-//    await Promise.all(applicaints.map(async (ids) => {
-//       if (ids.applicantsId.length >= 1) {
-//          let details = await Promise.all(ids.applicantsId.map(async (id) => {
-//             const applicaintDetail = await User.findById(id);
-//             return applicaintDetail;
-//          }));
-//          allDetails = allDetails.concat(details);
-//       } else {
-//          noApplicationDetails.push({ 'no applications fors ': ids.title });
-//       }
-//    }));
-//    allDetails = allDetails.concat(noApplicationDetails);
-//    return allDetails;
-// } 
-// catch (error) {
-//    console.log(error);
-// }}
-//get fillterd applications by JobID
-const filterdApplications = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const filtred = yield JobModel_1.default.findById(id);
-        const filterdUsers = [];
-        if (filtred && filtred.applicantsId) {
-            yield Promise.all(filtred.applicantsId.map((ids) => __awaiter(void 0, void 0, void 0, function* () {
-                const user = yield UserModel_1.default.findById(ids);
-                if (user) {
-                    filterdUsers.push(user);
-                }
-            })));
-        }
-        return filterdUsers;
+//   try {
+//     const applicaints = await Job.find();
+//     let allDetails: Object[] = [];
+//     let noApplicationDetails: Object[] = [];
+//     await Promise.all(
+//       applicaints.map(async (ids) => {
+//         if (ids.applicantsId.length >= 1) {
+//           let details = await Promise.all(
+//             ids.applicantsId.map(async (id) => {
+//               const applicaintDetail = await User.findById(id);
+//               return applicaintDetail;
+//             })
+//           );
+//           allDetails = allDetails.concat(details);
+//         } else {
+//           noApplicationDetails.push({ "no applications fors ": ids.title });
+//         }
+//       })
+//     );
+//     allDetails = allDetails.concat(noApplicationDetails);
+//     return allDetails;
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
+const getApplicants = (obj) => __awaiter(void 0, void 0, void 0, function* () {
+    const { page, limit } = obj;
+    const results = UserModel_1.default.aggregate([
+        {
+            $lookup: {
+                from: "jobs",
+                localField: "appliedTo",
+                foreignField: "_id",
+                as: "appliedTo",
+            }
+        },
+        { $unwind: "$appliedTo" },
+        {
+            $project: {
+                _id: 0,
+                name: 1,
+                experience: 1,
+                graduationYear: 1,
+                discription: 1,
+                appliedTo: "$appliedTo.title",
+            },
+        },
+    ]);
+    const options = { page, limit };
+    const response = yield UserModel_1.default.aggregatePaginate(results, options)
+        .then((result) => result)
+        .catch((err) => console.log(err));
+    return response;
+    // console.log(response);
+});
+exports.getApplicants = getApplicants;
+//get fillterd applications 
+const filterdApplications = (reqQuery) => __awaiter(void 0, void 0, void 0, function* () {
+    const { search, page, limit } = reqQuery;
+    const colm = ["name", "experience", "discription", "appliedTo"];
+    const or = [];
+    const filterQuery = { $or: [] };
+    if (typeof search == "string") {
+        let trimStr = search.trim();
+        colm.forEach((clm) => {
+            {
+                or.push({
+                    [clm]: { $regex: `.*${trimStr}.*`, $options: "i" }
+                });
+            }
+            console.log(or);
+        });
+        filterQuery.$or = or;
     }
-    catch (error) {
-        console.log(error);
-    }
+    const results = UserModel_1.default.aggregate([
+        { $match: filterQuery },
+        { $lookup: {
+                from: "jobs",
+                localField: "appliedTo",
+                foreignField: "_id",
+                as: "appliedTo",
+            } },
+        { $unwind: "$appliedTo" },
+        {
+            $project: {
+                _id: 0,
+                name: 1,
+                experience: 1,
+                graduationYear: 1,
+                discription: 1,
+                appliedTo: "$appliedTo.title",
+            },
+        },
+    ]);
+    // console.log(results); 
+    const options = { page, limit };
+    const response = yield UserModel_1.default.aggregatePaginate(results, options)
+        .then((result) => result)
+        .catch((err) => console.log(err));
+    // console.log(response)
+    return response;
 });
 exports.filterdApplications = filterdApplications;
-//User get
-const getUser = (obj) => __awaiter(void 0, void 0, void 0, function* () {
-    const getUser = yield UserModel_1.default.findOne({ email: obj.email });
-    return getUser;
-});
-exports.getUser = getUser;

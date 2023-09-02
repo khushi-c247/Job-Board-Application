@@ -36,6 +36,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
+const mongoose_aggregate_paginate_v2_1 = __importDefault(require("mongoose-aggregate-paginate-v2"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 // import JobModel from "./JobModel";
 const UserModel = new mongoose_1.default.Schema({
@@ -74,6 +75,7 @@ const UserModel = new mongoose_1.default.Schema({
         default: "normal",
     },
 });
+//while creating user it will bcrypt password
 UserModel.pre('save', function (next) {
     return __awaiter(this, void 0, void 0, function* () {
         if (!this.isModified('password')) {
@@ -84,6 +86,7 @@ UserModel.pre('save', function (next) {
         next;
     });
 });
+//Update bcrypt password
 UserModel.pre(['findOneAndUpdate'], function (next) {
     let update = Object.assign({}, this.getUpdate());
     console.log();
@@ -111,4 +114,5 @@ UserModel.methods.checkPassword = function (candidatePassword) {
         return yield bcryptjs_1.default.compare(candidatePassword, this.password);
     });
 };
+UserModel.plugin(mongoose_aggregate_paginate_v2_1.default);
 exports.default = mongoose_1.default.model("User", UserModel);
