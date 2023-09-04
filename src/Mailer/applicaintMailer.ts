@@ -4,7 +4,7 @@ const transpoter = nodemailer.createTransport({
   service: "Gmail",
   auth: {
     user: "khushi.c@chapter247.com",
-    pass: "Khushi@0108",
+    pass: " ",
   },
 });
 const mailuser = async (mailId: string, title: string) => {
