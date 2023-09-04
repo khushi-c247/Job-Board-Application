@@ -18,7 +18,7 @@ const transpoter = nodemailer_1.default.createTransport({
     service: "Gmail",
     auth: {
         user: "khushi.c@chapter247.com",
-        pass: "Khushi@0108",
+        pass: " ",
     },
 });
 const mailuser = (mailId, title) => __awaiter(void 0, void 0, void 0, function* () {
