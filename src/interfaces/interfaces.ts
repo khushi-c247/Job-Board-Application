@@ -19,6 +19,7 @@ interface newUser {
   role: string;
   hashPassword: () => void;
   checkPassword: (password: string) => {};
+  token: string;
 }
 
 interface Loginbody {

@@ -11,12 +11,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.applicaints = exports.allApplicants = exports.viewJobsByIdController = exports.filterApplicants = exports.viewJobsController = exports.deleteJobsController = exports.updateJobsController = exports.addJobsController = void 0;
 const openingsServices_1 = require("../Services/openingsServices");
-//all applicaints 
+//NOT IN WORKING
 const applicaints = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     // const result =await getAllApplicants();  
     // return res.status(200).json({ "applicants": result});
 });
 exports.applicaints = applicaints;
+//NOT IN WORKING
 //Send all the existing jobs
 const viewJobsController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {

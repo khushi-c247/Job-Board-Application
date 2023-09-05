@@ -168,7 +168,6 @@ const serchService = (obj) => __awaiter(void 0, void 0, void 0, function* () {
     const or = [];
     const filterQuery = { $or: [] };
     if (search) {
-        // removeCache()
         const trimStr = search.trim();
         colm.forEach((clm) => {
             or.push({
@@ -177,6 +176,7 @@ const serchService = (obj) => __awaiter(void 0, void 0, void 0, function* () {
         });
         filterQuery.$or = or;
     }
+    console.log(filterQuery.$or);
     const cachedData = yield redis.get(`response?colm=${search}?page=${page}?limit=${limit}`);
     if (cachedData) {
         const parsedData = JSON.parse(cachedData);

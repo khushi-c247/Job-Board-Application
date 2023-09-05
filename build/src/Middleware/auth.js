@@ -7,7 +7,7 @@ const authorization = (role) => {
             next();
         }
         else {
-            res.sendStatus(403);
+            res.status(403).json({ error: `you cannot access this page because you are ${role}` });
         }
     };
 };

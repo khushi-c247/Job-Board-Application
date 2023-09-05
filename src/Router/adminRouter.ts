@@ -9,7 +9,7 @@ import {
   allApplicants,
 } from "../Controller/index";
 import authorization from "../Middleware/auth";
-import passport from "../config/passport";
+import passport from "../config/loginPassport";
 import { admin } from "../helper/constants";
 
 const router = express.Router();

@@ -9,8 +9,8 @@ import { versions } from "../src/helper/constants";
 import dotenv from "dotenv";
 dotenv.config();
 testConnection();
-UserModel.deleteMany({})
-JobModel.deleteMany({})
+// UserModel.deleteMany({})
+// JobModel.deleteMany({})
 before(async () => {
 
   UserModel.deleteMany({})

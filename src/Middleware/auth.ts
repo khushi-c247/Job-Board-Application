@@ -8,7 +8,7 @@ const authorization = (role: string) => {
     if (user && role === user.role) {
       next();
     } else {
-      res.sendStatus(403);
+      res.status(403).json( { error : `you cannot access this page because you are ${role}` });
     }
   };
 };

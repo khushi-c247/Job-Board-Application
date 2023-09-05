@@ -1,11 +1,14 @@
 import User from "../Model/UserModel";
 import Job from "../Model/JobModel";
+import {ParsedQs} from 'qs'
 import { newUser, Loginbody, reqUser, job } from "../interfaces/interfaces";
 import jwt from "jsonwebtoken";
 import { resetPasswordMailer } from "../Mailer/applicaintMailer";
 import { Request, Response } from "express";
-import Queue from "bull";
 
+
+import Queue from "bull";
+import {passwordChanged} from '../Mailer/applicaintMailer'
 // Create a new User to DataBase
 const createNewUser = async (obj: newUser) => {
   const scheduler = new Queue('createUserQueue');
@@ -21,28 +24,42 @@ const createNewUser = async (obj: newUser) => {
 //  console.log('done');
  
 // })
-main().catch(console.error); 
-return res
-};
 
+main().catch(console.error); 
+
+};
+let token :string ;
 //Forgot Password
-const passwordService = async (resetobj: { user: string; email: string }) => {
-  const user = await User.findOne({ email: resetobj.email });
-  if (user) {
+const passwordService = async (resetobj: { email: string }) => {
+  const userdetails = await User.findOne({ email: resetobj.email });
+   if (userdetails) {
     const token = jwt.sign({ email: resetobj.email }, "secret", {
-      expiresIn: "2h",
+      expiresIn: "1h",
     });
-    resetPasswordMailer(user.name, resetobj.email, token);
+    console.log(userdetails);
+    
+    resetPasswordMailer(userdetails.name, resetobj.email, token);
     return true;
   } else {
     return false;
   }
 };
 //Reset password
-const resetService = async (user: reqUser, passwordObj: any) => {
+const resetService = async (user: reqUser, passwordObj: { password :string, confirmPassword: string},token:string|undefined) => {
+
   const id = user._id!;
-  const userPassword = await User.findByIdAndUpdate(id, { ...passwordObj });
-  return userPassword;
+  passwordChanged(user.email)
+
+  const userdetails = await User.findById(id)
+   if(userdetails?.token !== token)
+   {
+    const userPassword = await User.findByIdAndUpdate(id, { ...passwordObj, token:token});
+    return true;
+  }
+   else{
+    return false;
+   }
+    
 };
 
 //Update an existing User
@@ -60,20 +77,11 @@ const updateUser = async (user: reqUser, obj: newUser) => {
   return "User Updated";
 };
 
+//Delete an existing User
 const deleteUser = async (user: reqUser) => {
   try {
-    //   const id = user._id
-    //   const jobs = await Job.aggregate([
-    //     {$match: {applicantsId : id }}
-    //   ])
-
-    //  Job.findByIdAndDelete()
-
-    //   console.log(jobs);
-
-    const res = await Job.find();
-
-    // await User.findByIdAndDelete(id);
+    const id = user._id
+    await User.findByIdAndDelete(id);
     return;
   } catch (error) {
     console.log(error);

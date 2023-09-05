@@ -1,5 +1,6 @@
 import express from "express";
-import validateMiddleware from "../Middleware/validators";
+import {body, validationResult } from 'express-validator'
+import {validateMiddleware,validateForggot } from "../Middleware/validators";
 import {
   newUsercrete,
   loginController,
@@ -23,5 +24,5 @@ router.get("/sort", sortController);
 router.get("/view-job", JobserchController);
 
 //forgot password
-router.post("/forgot-password",forgotPassword)
+router.post("/forgot-password",validateForggot,forgotPassword)
 export default router;

@@ -8,11 +8,10 @@ const index_1 = require("./src/Router/index");
 const constants_1 = require("./src/helper/constants");
 const env_1 = require("./src/config/env");
 const db_1 = require("./src/config/db");
-const passport_1 = __importDefault(require("./src/config/passport"));
+const loginPassport_1 = __importDefault(require("./src/config/loginPassport"));
 const errorHandler_1 = __importDefault(require("./src/Middleware/errorHandler"));
-const errorLast_1 = __importDefault(require("./src/Middleware/errorLast"));
 const app = (0, express_1.default)();
-app.use(passport_1.default.initialize());
+app.use(loginPassport_1.default.initialize());
 //mongoDB connection
 (0, db_1.dbConnection)();
 //body parsing
@@ -31,7 +30,6 @@ app.use("*", (req, res) => {
 });
 //Error Handlers
 app.use(errorHandler_1.default);
-app.use(errorLast_1.default);
 app.listen(env_1.port, () => {
     console.log("server activated");
 });

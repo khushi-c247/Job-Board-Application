@@ -14,10 +14,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.resetService = exports.passwordService = exports.deleteUser = exports.updateUser = exports.login = exports.createNewUser = void 0;
 const UserModel_1 = __importDefault(require("../Model/UserModel"));
-const JobModel_1 = __importDefault(require("../Model/JobModel"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const applicaintMailer_1 = require("../Mailer/applicaintMailer");
 const bull_1 = __importDefault(require("bull"));
+const applicaintMailer_2 = require("../Mailer/applicaintMailer");
 // Create a new User to DataBase
 const createNewUser = (obj) => __awaiter(void 0, void 0, void 0, function* () {
     const scheduler = new bull_1.default('createUserQueue');
@@ -32,17 +32,18 @@ const createNewUser = (obj) => __awaiter(void 0, void 0, void 0, function* () {
     //  console.log('done');
     // })
     main().catch(console.error);
-    return res;
 });
 exports.createNewUser = createNewUser;
+let token;
 //Forgot Password
 const passwordService = (resetobj) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield UserModel_1.default.findOne({ email: resetobj.email });
-    if (user) {
+    const userdetails = yield UserModel_1.default.findOne({ email: resetobj.email });
+    if (userdetails) {
         const token = jsonwebtoken_1.default.sign({ email: resetobj.email }, "secret", {
-            expiresIn: "2h",
+            expiresIn: "1h",
         });
-        (0, applicaintMailer_1.resetPasswordMailer)(user.name, resetobj.email, token);
+        console.log(userdetails);
+        (0, applicaintMailer_1.resetPasswordMailer)(userdetails.name, resetobj.email, token);
         return true;
     }
     else {
@@ -51,10 +52,17 @@ const passwordService = (resetobj) => __awaiter(void 0, void 0, void 0, function
 });
 exports.passwordService = passwordService;
 //Reset password
-const resetService = (user, passwordObj) => __awaiter(void 0, void 0, void 0, function* () {
+const resetService = (user, passwordObj, token) => __awaiter(void 0, void 0, void 0, function* () {
     const id = user._id;
-    const userPassword = yield UserModel_1.default.findByIdAndUpdate(id, Object.assign({}, passwordObj));
-    return userPassword;
+    (0, applicaintMailer_2.passwordChanged)(user.email);
+    const userdetails = yield UserModel_1.default.findById(id);
+    if ((userdetails === null || userdetails === void 0 ? void 0 : userdetails.token) !== token) {
+        const userPassword = yield UserModel_1.default.findByIdAndUpdate(id, Object.assign(Object.assign({}, passwordObj), { token: token }));
+        return true;
+    }
+    else {
+        return false;
+    }
 });
 exports.resetService = resetService;
 //Update an existing User
@@ -73,16 +81,11 @@ const updateUser = (user, obj) => __awaiter(void 0, void 0, void 0, function* ()
     return "User Updated";
 });
 exports.updateUser = updateUser;
+//Delete an existing User
 const deleteUser = (user) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        //   const id = user._id
-        //   const jobs = await Job.aggregate([
-        //     {$match: {applicantsId : id }}
-        //   ])
-        //  Job.findByIdAndDelete()
-        //   console.log(jobs);
-        const res = yield JobModel_1.default.find();
-        // await User.findByIdAndDelete(id);
+        const id = user._id;
+        yield UserModel_1.default.findByIdAndDelete(id);
         return;
     }
     catch (error) {

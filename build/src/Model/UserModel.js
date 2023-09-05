@@ -74,6 +74,9 @@ const UserModel = new mongoose_1.default.Schema({
         enum: ["admin", "normal"],
         default: "normal",
     },
+    token: {
+        type: String,
+    }
 });
 //while creating user it will bcrypt password
 UserModel.pre("save", function (next) {

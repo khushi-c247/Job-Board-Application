@@ -13,7 +13,8 @@ import authorization from "../Middleware/auth";
 import uploadfile from "../helper/upload";
 import bodyParser from "body-parser";
 import { normal } from "../helper/constants";
-import passport from "../config/passport";
+import passport from "../config/loginPassport";
+import {demopassport, emptyToken} from "../config/resetPassport";
 const router = express.Router();
 router.use(bodyParser.urlencoded({ extended: true }));
 
@@ -45,7 +46,7 @@ router.get(
 
 //view all job openings (include serching and pagination feature)
 router.get("/view-job", JobserchController);
-router.get("view-jobById/:id", viewJobsByIdController);
+router.get("/view-jobById/:id", viewJobsByIdController);
 
 //Sort job by any clm 
 router.get("/sort", sortController);
@@ -53,8 +54,9 @@ router.get("/sort", sortController);
 //Upload Resumes
 router.post("/resume", uploadfile.array("resume"));
 
-router.put('/reset',passport.authenticate("jwt", { session: false }), resetPassword)
+// router.put('/reset', emptyToken,demopassport.authenticate("jwt", { session: false }), resetPassword)
 
+router.put('/reset', emptyToken,demopassport.authenticate("jwt", { session: false }), resetPassword)
 
 
 

@@ -36,12 +36,8 @@ const resetPasswordMailer = async (
          Hello ${userName},
          We have recived a request for the password change. Please click on the link given below  and change the password with the given token.
          
- 
-        Token:
-        ${token}
-
         Note: This token is only valid for 2hrs.
-        Link:http://localhost:3000/v1/user/reset`,
+        Link:http://localhost:3000/v1/user/reset?token=${token}`,
   };
   try {
     const info = await transpoter.sendMail(mailOptions);
@@ -51,5 +47,19 @@ const resetPasswordMailer = async (
   }
 };
 
-
-export { mailuser, resetPasswordMailer };
+const passwordChanged = async (email:string|undefined,)=>{
+  const mailOptions: nodemailer.SendMailOptions = {
+    from: "khushi.c@chapter247.com",
+    to: email,
+    subject: "Password changed",
+    text: `Hello User, your password has been changed`,
+  };
+  try {
+    const info = await transpoter.sendMail(mailOptions);
+    console.log("Email sent", info.response);
+    return;
+  } catch (error) {
+    console.log(error);
+  }
+}
+export { mailuser, resetPasswordMailer , passwordChanged };

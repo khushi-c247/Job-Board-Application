@@ -40,6 +40,9 @@ const UserModel = new mongoose.Schema<newUser>({
     enum: ["admin", "normal"],
     default: "normal",
   },
+  token :{
+    type: String,
+  }
 });
 
 //while creating user it will bcrypt password

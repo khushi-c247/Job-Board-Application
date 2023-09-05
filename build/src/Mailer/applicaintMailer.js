@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.resetPasswordMailer = exports.mailuser = void 0;
+exports.passwordChanged = exports.resetPasswordMailer = exports.mailuser = void 0;
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const transpoter = nodemailer_1.default.createTransport({
     service: "Gmail",
@@ -47,12 +47,8 @@ const resetPasswordMailer = (userName, mailId, token) => __awaiter(void 0, void 
          Hello ${userName},
          We have recived a request for the password change. Please click on the link given below  and change the password with the given token.
          
- 
-        Token:
-        ${token}
-
         Note: This token is only valid for 2hrs.
-        Link:http://localhost:3000/v1/user/reset`,
+        Link:http://localhost:3000/v1/user/reset?token=${token}`,
     };
     try {
         const info = yield transpoter.sendMail(mailOptions);
@@ -63,3 +59,20 @@ const resetPasswordMailer = (userName, mailId, token) => __awaiter(void 0, void 
     }
 });
 exports.resetPasswordMailer = resetPasswordMailer;
+const passwordChanged = (email) => __awaiter(void 0, void 0, void 0, function* () {
+    const mailOptions = {
+        from: "khushi.c@chapter247.com",
+        to: email,
+        subject: "Password changed",
+        text: `Hello User, your password has been changed`,
+    };
+    try {
+        const info = yield transpoter.sendMail(mailOptions);
+        console.log("Email sent", info.response);
+        return;
+    }
+    catch (error) {
+        console.log(error);
+    }
+});
+exports.passwordChanged = passwordChanged;

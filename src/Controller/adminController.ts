@@ -12,11 +12,13 @@ import {
 } from "../Services/openingsServices";
 
 
-//all applicaints 
+//NOT IN WORKING
 const applicaints =async (req:Request, res : Response, next : NextFunction) => {
   // const result =await getAllApplicants();  
   // return res.status(200).json({ "applicants": result});
 }
+
+//NOT IN WORKING
 //Send all the existing jobs
 const viewJobsController = async (
   req: Request,
@@ -93,6 +95,7 @@ const deleteJobsController = async (
     next(error);
   }
 };
+
 //GetUser
 // const getUserController = async (
 //   req: Request,
@@ -109,6 +112,7 @@ const deleteJobsController = async (
 // };
 
 // see all application's: includes pagination and aggregation
+
 const allApplicants = async (req: Request, res: Response) => {
   try {
     const applicants = await getApplicants(req.query);

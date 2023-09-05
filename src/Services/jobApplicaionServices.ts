@@ -172,8 +172,7 @@ const serchService = async (obj: search) => {
   const filterQuery: orInterface = { $or: [] };
  
   if (search) {
-    // removeCache()
-    const trimStr: string = search.trim();
+    const trimStr: string = search.trim(); 
     colm.forEach((clm) => {
       or.push({
         [clm]: { $regex: `.*${trimStr}.*`, $options: "i" },
@@ -181,7 +180,8 @@ const serchService = async (obj: search) => {
     });
     filterQuery.$or = or;
   }
-
+  console.log(filterQuery.$or);
+  
   const cachedData = await redis.get(`response?colm=${search}?page=${page}?limit=${limit}`);
 
   if (cachedData) {

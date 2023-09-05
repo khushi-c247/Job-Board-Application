@@ -151,7 +151,6 @@ const getApplicants = (obj) => __awaiter(void 0, void 0, void 0, function* () {
         // console.log(response)
         redis.set(`response?page=${page}?limit=${limit}`, JSON.stringify(results));
         return response;
-        // console.log(response);
     }
     ;
 });
@@ -204,7 +203,6 @@ const filterdApplications = (reqQuery) => __awaiter(void 0, void 0, void 0, func
                 },
             },
         ]);
-        // console.log(results);
         const options = { page, limit };
         const response = yield UserModel_1.default.aggregatePaginate(results, options)
             .then((result) => result)

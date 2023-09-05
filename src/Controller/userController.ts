@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-
+import {ParsedQs} from 'qs'
 import {
   // getJobListings,
   createAplication,
@@ -206,7 +206,7 @@ const forgotPassword = async (
         .status(200)
         .json({ message: " A mail has been sent to your registerd email" });
     } else {
-      res.render("forget.pug");
+      res.render("forget.pug");    
     }
   } catch (error) {
     console.log(error);
@@ -220,12 +220,25 @@ const resetPassword = async (
 ) => {
   try {
     let user: reqUser = req.user!;
-    const reseted = await resetService(user, req.body);
-    res.render("resetLogin.pug");
+    console.log(req.query.token);
+    const token :string | string[] | ParsedQs | ParsedQs[] | undefined= req.query.token?.toString()
+    const passwordMatch = await resetService(user, req.body, token);
+    if(req.body.password.trim() !== req.body.confirmPassword.trim()) {
+    {
+      res.status(401).json({ message: "both Password dose not match"})
+      
+    }
+    if (!passwordMatch) {
+      res.status(401).json({message: "cannot use same url"})
+    }
+    else {
+      res.status(200).render("resetLogin.pug");
+    }
+  }
   } catch (error) {
     next(error);
   }
-};
+}
 
 export {
   resetPassword,

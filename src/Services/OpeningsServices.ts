@@ -103,7 +103,6 @@ const deleteJob = async (id: string) => {
 //     console.log(error);
 //   }
 // };
-
 const getApplicants = async (obj: ParsedQs) => {
   const { page, limit } = obj;
   const cachedData = await redis.get(
@@ -146,9 +145,7 @@ const getApplicants = async (obj: ParsedQs) => {
           JSON.stringify(results)
         );
   return response;
-  // console.log(response);
-};
-}
+};}
 //get fillterd applications
 const filterdApplications = async (reqQuery: ParsedQs) => {
   const { search, page, limit } = reqQuery;
@@ -200,8 +197,6 @@ const filterdApplications = async (reqQuery: ParsedQs) => {
         },
       },
     ]);
-    // console.log(results);
-
     const options: object = { page, limit };
     const response = await User.aggregatePaginate(results, options)
       .then((result) => result)

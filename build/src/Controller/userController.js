@@ -188,10 +188,23 @@ const forgotPassword = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
 });
 exports.forgotPassword = forgotPassword;
 const resetPassword = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     try {
         let user = req.user;
-        const reseted = yield (0, newUserService_1.resetService)(user, req.body);
-        res.render("resetLogin.pug");
+        console.log(req.query.token);
+        const token = (_a = req.query.token) === null || _a === void 0 ? void 0 : _a.toString();
+        const passwordMatch = yield (0, newUserService_1.resetService)(user, req.body, token);
+        if (req.body.password.trim() !== req.body.confirmPassword.trim()) {
+            {
+                res.status(401).json({ message: "both Password dose not match" });
+            }
+            if (!passwordMatch) {
+                res.status(401).json({ message: "cannot use same url" });
+            }
+            else {
+                res.status(200).render("resetLogin.pug");
+            }
+        }
     }
     catch (error) {
         next(error);
