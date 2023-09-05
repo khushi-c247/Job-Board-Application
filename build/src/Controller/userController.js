@@ -12,10 +12,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.forgotPassword = exports.deleteUserController = exports.updateUserController = exports.JobserchController = exports.GetmyJobs = exports.sortController = exports.loginController = exports.findJob = exports.newUsercrete = exports.newApplication = exports.jobListing = exports.resetPassword = void 0;
 const jobApplicaionServices_1 = require("../Services/jobApplicaionServices");
 const newUserService_1 = require("../Services/newUserService");
+//NOT ACTIVE!! (DUPLICATE OF SERCH SERVICE)
 const jobListing = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const getjobListing = yield (0, jobApplicaionServices_1.getJobListings)();
-        res.status(200).json({ "Active job listings:": getjobListing });
+        // const getjobListing = await getJobListings();
+        // res.status(200).json({ "Active job listings:": getjobListing });
     }
     catch (error) {
         console.log("error in user controller");
@@ -48,7 +49,7 @@ const newUsercrete = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
         next({
             err: error,
             status: 400,
-            message: "You have enterd some wrong details",
+            message: "You have entered some wrong details",
         });
     }
 });
@@ -57,14 +58,14 @@ exports.newUsercrete = newUsercrete;
 const findJob = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const getjobListingId = yield (0, jobApplicaionServices_1.getJobListingsId)(req.params.id);
-        res.status(200).json({ "Job listnings:": getjobListingId });
+        res.status(200).json({ "listenings": getjobListingId });
     }
     catch (error) {
         console.log("error in user controller");
         next({
             err: error,
             status: 400,
-            message: "You have enterd some wrong details",
+            message: "You have entered some wrong details",
         });
     }
 });
@@ -80,7 +81,7 @@ const sortController = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
         next({
             err: error,
             status: 400,
-            message: "You have enterd some wrong details",
+            message: "You have entered some wrong details",
         });
     }
 });
@@ -95,7 +96,7 @@ const loginController = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
         next({
             err: error,
             status: 400,
-            message: "You have enterd some wrong details",
+            message: "You have entered some wrong details",
         });
     }
 });
@@ -114,7 +115,7 @@ const GetmyJobs = (req, res, next) => __awaiter(void 0, void 0, void 0, function
         next({
             err: error,
             status: 400,
-            message: "You have enterd some wrong details",
+            message: "You have entered some wrong details",
         });
     }
 });
@@ -146,7 +147,7 @@ const updateUserController = (req, res, next) => __awaiter(void 0, void 0, void 
         next({
             err: error,
             status: 400,
-            message: "You have enterd some wrong details",
+            message: "You have entered some wrong details",
         });
     }
 });

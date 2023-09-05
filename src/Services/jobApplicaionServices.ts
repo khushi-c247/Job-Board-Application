@@ -10,6 +10,8 @@ import {
   orInterface,
   reqUser,
 } from "../interfaces/interfaces";
+import Redis from "ioredis";
+const redis = new Redis();
 
 //create job application
 const createAplication = async (user: reqUser, obj: application) => {
@@ -30,10 +32,10 @@ const createAplication = async (user: reqUser, obj: application) => {
 };
 
 // get existing job openings from DB
-const getJobListings = async () => {
-  const result = await Job.find();
-  return result;
-};
+// const getJobListings = async () => {
+//   const result = await Job.find();
+//   return result;
+// };
 
 // get existing job openings by id from DB
 const getJobListingsId = async (id: string) => {
@@ -104,13 +106,73 @@ const myJobs = async (user: reqUser, queryObj: ParsedQs) => {
   }
 };
 
-// Serch service
+// const serchService = async (obj: search) => 
+
+//   const { search, page, limit } = obj;
+//   const colm = ["title", "discription", "requirements"];
+//   const or: { [x: string]: { $regex: string; $options: string } }[] = [];
+//   const filterQuery: orInterface = { $or: [] };
+//   if (search) {
+//     const trimStr: string = search.trim();
+//     colm.forEach((clm) => {
+//       or.push({
+//         [clm]: { $regex: `.*${trimStr}.*`, $options: "i" },
+//       });
+//     });
+//     filterQuery.$or = or;
+//   }
+
+//   //Through Offset
+//   // const results = await Job.aggregate([
+//   //   {
+//   //     $match: filterQuery,
+//   //   },
+//   //   {
+//   //     $project: {
+//   //       _id: 0,
+//   //       title: 1,
+//   //       discription: 1,
+//   //       requirements: 1,
+//   //       salary: 1,
+//   //     },
+//   //   },
+//   //   { $skip: page },
+//   //   { $limit: limit },
+//   // ]);
+//   // return result
+
+//   //Using cursor pagination
+//   const results = Job.aggregate([
+//     { $match: filterQuery },
+//     {
+//       $project: {
+//         _id: 0,
+//         title: 1,
+//         discription: 1,
+//         requirements: 1,
+//         salary: 1,
+//       },
+//     },
+//   ]);
+//   const options: object = { page, limit };
+//   const response = await Job.aggregatePaginate(results, options)
+//     .then((result) => result)
+//     .catch((err: Error) => console.log(err));
+//   return response;
+    
+// };
+
+
+//Serch service 
+  
 const serchService = async (obj: search) => {
-  const { search, page, limit } = obj;
-  const colm = ["title", "discription", "requirements"];
+    const { search , page, limit } = obj;
+    const colm = ["title", "discription", "requirements"];
   const or: { [x: string]: { $regex: string; $options: string } }[] = [];
   const filterQuery: orInterface = { $or: [] };
+ 
   if (search) {
+    // removeCache()
     const trimStr: string = search.trim();
     colm.forEach((clm) => {
       or.push({
@@ -120,48 +182,61 @@ const serchService = async (obj: search) => {
     filterQuery.$or = or;
   }
 
-  //Through Offset
-  // const results = await Job.aggregate([
-  //   {
-  //     $match: filterQuery,
-  //   },
-  //   {
-  //     $project: {
-  //       _id: 0,
-  //       title: 1,
-  //       discription: 1,
-  //       requirements: 1,
-  //       salary: 1,
-  //     },
-  //   },
-  //   { $skip: page },
-  //   { $limit: limit },
-  // ]);
-  // return result
+  const cachedData = await redis.get(`response?colm=${search}?page=${page}?limit=${limit}`);
 
-  //Using cursor pagination
-  const results = Job.aggregate([
-    { $match: filterQuery },
-    {
-      $project: {
-        _id: 0,
-        title: 1,
-        discription: 1,
-        requirements: 1,
-        salary: 1,
+  if (cachedData) {
+    const parsedData = JSON.parse(cachedData);
+    console.log(parsedData);
+    return parsedData;
+  } 
+  else {
+    console.log("No cached data");
+    // const offset = (page - 1) * limit;
+    const results = await Job.aggregate([
+      { $match: filterQuery },
+      {
+        $project: {
+          _id: 0,
+          title: 1,
+          discription: 1,
+          requirements: 1,
+          salary: 1,
+        },
       },
-    },
-  ]);
-  const options: object = { page, limit };
-  const response = await Job.aggregatePaginate(results, options)
-    .then((result) => result)
-    .catch((err: Error) => console.log(err));
-  return response;
+      { $skip: page },
+      { $limit: limit },
+    ]);
+      // Using cursor pagination
+      // const results = Job.aggregate([
+      //   { $match: filterQuery },
+      //   {
+      //     $project: {
+      //       _id: 0,
+      //       title: 1,
+      //       discription: 1,
+      //       requirements: 1,
+      //       salary: 1,
+      //     },
+      //   },
+      // ]);
+      // const options: object = { page, limit };
+      // const response = await Job.aggregatePaginate(results, options)
+      //   .then((result) => result)
+      //   .catch((err: Error) => console.log(err));
+      // return response;
+    redis.set(`response?colm=${search}?page=${page}?limit=${limit}`, JSON.stringify(results));
+    console.log(results);
+
+    return results;
+  }
 };
+
+
+
 
 export {
   createAplication,
-  getJobListings,
+  // getJobListings,
   getJobListingsId,
   sorting,
   myJobs,

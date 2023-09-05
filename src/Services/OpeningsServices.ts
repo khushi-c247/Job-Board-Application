@@ -1,39 +1,30 @@
 import Job from "../Model/JobModel";
-import {
-  jobObj,
-  newUser,
-  Loginbody,
-  search,
-  orInterface,
-} from "../interfaces/interfaces";
+import { jobObj, orInterface } from "../interfaces/interfaces";
 import User from "../Model/UserModel";
 import mongoose from "mongoose";
 import { ParsedQs } from "qs";
-
+import Redis from "ioredis";
+const redis = new Redis();
 //View added jobs
-const viewjobOpeninigs = async (obj: ParsedQs) => {
-  try {
-    const options: object = {
-      page: obj.page,
-      limit: obj.limit,
-    };
-    const result = Job.aggregate([
-      {
-        $project: {
-          _id: 0,
-          title: 1,
-          discription: 1,
-          requirements: 1,
-          salary: 1,
-        },
-      },
-    ]);
-    const response = await Job.aggregatePaginate(result, options);
-    return response;
-  } catch (error) {
-    console.log(`Error in Opening Services ${error}`);
-  }
-};
+
+// const viewjobOpeninigs = async () => {
+//   const cachedData = await redis.get("result");
+//   if (cachedData) {
+//     const parsedData = JSON.parse(cachedData);
+//     console.log(parsedData);
+//     return parsedData;
+//   }
+//   else {
+//     console.log("No cached data");
+//     try {
+//       const result = await Job.find()
+//       redis.set("result", JSON.stringify(result));
+//       return result;
+//     } catch (error) {
+//       console.log(`Error in Opening Services ${error}`);
+//     }
+// };
+// }
 
 //View jobs by id
 const viewjobByIdOpeninigs = async (id: string) => {
@@ -115,7 +106,15 @@ const deleteJob = async (id: string) => {
 
 const getApplicants = async (obj: ParsedQs) => {
   const { page, limit } = obj;
-
+  const cachedData = await redis.get(
+    `response?page=${page}?limit=${limit}`
+  );
+  if (cachedData) {
+    const parsedData = JSON.parse(cachedData);
+    console.log(parsedData);
+    return parsedData;
+  }
+   else {
   const results = User.aggregate([
     {
       $lookup: {
@@ -141,10 +140,15 @@ const getApplicants = async (obj: ParsedQs) => {
   const response = await User.aggregatePaginate(results, options)
     .then((result) => result)
     .catch((err: Error) => console.log(err));
+        // console.log(response)
+        redis.set(
+          `response?page=${page}?limit=${limit}`,
+          JSON.stringify(results)
+        );
   return response;
   // console.log(response);
 };
-
+}
 //get fillterd applications
 const filterdApplications = async (reqQuery: ParsedQs) => {
   const { search, page, limit } = reqQuery;
@@ -165,37 +169,51 @@ const filterdApplications = async (reqQuery: ParsedQs) => {
     });
     filterQuery.$or = or;
   }
-  const results = User.aggregate([
-    { $match: filterQuery },
-    {
-      $lookup: {
-        from: "jobs",
-        localField: "appliedTo",
-        foreignField: "_id",
-        as: "appliedTo",
+  const cachedData = await redis.get(
+    `response?colm=${search}?page=${page}?limit=${limit}`
+  );
+  if (cachedData) {
+    const parsedData = JSON.parse(cachedData);
+    console.log(parsedData);
+    return parsedData;
+  } else {
+    console.log("No cached data");
+    const results = User.aggregate([
+      { $match: filterQuery },
+      {
+        $lookup: {
+          from: "jobs",
+          localField: "appliedTo",
+          foreignField: "_id",
+          as: "appliedTo",
+        },
       },
-    },
-    { $unwind: "$appliedTo" },
-    {
-      $project: {
-        _id: 0,
-        name: 1,
-        experience: 1,
-        graduationYear: 1,
-        discription: 1,
-        appliedTo: "$appliedTo.title",
+      { $unwind: "$appliedTo" },
+      {
+        $project: {
+          _id: 0,
+          name: 1,
+          experience: 1,
+          graduationYear: 1,
+          discription: 1,
+          appliedTo: "$appliedTo.title",
+        },
       },
-    },
-  ]);
-  // console.log(results);
+    ]);
+    // console.log(results);
 
-  const options: object = { page, limit };
-  const response = await User.aggregatePaginate(results, options)
-    .then((result) => result)
-    .catch((err: Error) => console.log(err));
-  // console.log(response)
+    const options: object = { page, limit };
+    const response = await User.aggregatePaginate(results, options)
+      .then((result) => result)
+      .catch((err: Error) => console.log(err));
+    // console.log(response)
+    redis.set(
+      `response?colm=${search}?page=${page}?limit=${limit}`,
+      JSON.stringify(results)
+    );
 
-  return response;
+    return response;
+  }
 };
 
 // //User get
@@ -204,13 +222,56 @@ const filterdApplications = async (reqQuery: ParsedQs) => {
 //   return getUser;
 // };
 
+// const getAllApplicants = async () => {
+
+//   const cachedData = await redis.get("results");
+//   if (cachedData) {
+//     const parsedData = JSON.parse(cachedData);
+//     console.log(parsedData);
+//     return parsedData;
+//   }
+//   else {
+//     console.log("No cached data");
+//     try {
+//       const results = await User.aggregate([
+//         {
+//           $lookup: {
+//             from: "jobs",
+//             localField: "appliedTo",
+//             foreignField: "_id",
+//             as: "appliedTo",
+//           },
+//         },
+//         { $unwind: "$appliedTo" },
+//         {
+//           $project: {
+//             _id: 0,
+//             name: 1,
+//             experience: 1,
+//             graduationYear: 1,
+//             discription: 1,
+//             appliedTo: "$appliedTo.title",
+//           },
+//         },
+//       ]);
+//       redis.set("results", JSON.stringify(results));
+//       return results;
+
+//     } catch (error) {
+//       console.log(`Error in Opening Services ${error}`);
+//     }
+// };
+
+//   // console.log(response);
+// };
 export {
   addjobOpeninigs,
   getApplicants,
   updateJob,
   deleteJob,
-  viewjobOpeninigs,
+  // viewjobOpeninigs,
   // getUser,
   filterdApplications,
   viewjobByIdOpeninigs,
+  // getAllApplicants
 };

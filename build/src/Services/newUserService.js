@@ -17,10 +17,22 @@ const UserModel_1 = __importDefault(require("../Model/UserModel"));
 const JobModel_1 = __importDefault(require("../Model/JobModel"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const applicaintMailer_1 = require("../Mailer/applicaintMailer");
+const bull_1 = __importDefault(require("bull"));
 // Create a new User to DataBase
 const createNewUser = (obj) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield UserModel_1.default.create(obj);
-    return user;
+    const scheduler = new bull_1.default('createUserQueue');
+    const main = () => __awaiter(void 0, void 0, void 0, function* () {
+        yield scheduler.add(yield UserModel_1.default.create(obj));
+    });
+    const res = scheduler.process((job, done) => {
+        done();
+        console.log(job.data);
+    });
+    // scheduler.on('compleate', () => {
+    //  console.log('done');
+    // })
+    main().catch(console.error);
+    return res;
 });
 exports.createNewUser = createNewUser;
 //Forgot Password

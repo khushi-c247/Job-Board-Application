@@ -1,27 +1,24 @@
 import mongoose, { connect } from "mongoose";
-import { DB_URL,DB_TESTING} from "./env";
+import { DB_URL, DB_TESTING } from "./env";
 import dotenv from "dotenv";
 dotenv.config();
-let url :string ;
-if(process.env.NODE_ENV==='dev') {
-    url = DB_URL
+let url: string;
+if (process.env.NODE_ENV === "dev") {
+  url = DB_URL;
+} else {
+  url = DB_TESTING; 
 }
-else 
-{
-   url =DB_TESTING
-}
-export  function dbConnection() {
+export function dbConnection() {
   mongoose
     .connect(url)
     .then(() => console.log("DB connected at", { DB_URL }))
-    .catch(() => console.log("errorin DB"));
+    .catch(() => console.log("error in DB"));
 }
 
 // //ERROR IN ENV!!
-export function testConnection(){
+export function testConnection() {
   mongoose
-  .connect(url)
-  .then(() => console.log("DB connected at"))
-  .catch((err) => console.log("error in DB", err));
-  }
-
+    .connect(url)
+    .then(() => console.log("DB connected at"))
+    .catch((err) => console.log("error in DB", err));
+}

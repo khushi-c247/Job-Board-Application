@@ -9,7 +9,7 @@ const env_1 = require("./env");
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 let url;
-if (process.env.NODE_ENV === 'dev') {
+if (process.env.NODE_ENV === "dev") {
     url = env_1.DB_URL;
 }
 else {
@@ -19,7 +19,7 @@ function dbConnection() {
     mongoose_1.default
         .connect(url)
         .then(() => console.log("DB connected at", { DB_URL: env_1.DB_URL }))
-        .catch(() => console.log("errorin DB"));
+        .catch(() => console.log("error in DB"));
 }
 exports.dbConnection = dbConnection;
 // //ERROR IN ENV!!

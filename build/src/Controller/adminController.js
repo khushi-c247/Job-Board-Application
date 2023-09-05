@@ -9,16 +9,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.allApplicants = exports.viewJobsByIdController = exports.filterApplicants = exports.viewJobsController = exports.deleteJobsController = exports.updateJobsController = exports.addJobsController = void 0;
+exports.applicaints = exports.allApplicants = exports.viewJobsByIdController = exports.filterApplicants = exports.viewJobsController = exports.deleteJobsController = exports.updateJobsController = exports.addJobsController = void 0;
 const openingsServices_1 = require("../Services/openingsServices");
-//Send all the existig jobs
+//all applicaints 
+const applicaints = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    // const result =await getAllApplicants();  
+    // return res.status(200).json({ "applicants": result});
+});
+exports.applicaints = applicaints;
+//Send all the existing jobs
 const viewJobsController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const existingJobs = yield (0, openingsServices_1.viewjobOpeninigs)(req.query);
-        return res.status(200).json({ "Jobs exist in DB": existingJobs });
+        // const existingJobs = await viewjobOpeninigs();
+        // return res.status(200).json({ "Jobs exist in DB": existingJobs });
     }
     catch (error) {
-        console.log(`error in admin Controler`);
+        console.log(`error in admin Controller`);
         next(error);
     }
 });
@@ -30,7 +36,7 @@ const viewJobsByIdController = (req, res, next) => __awaiter(void 0, void 0, voi
         return res.status(200).json({ "Job by Id": existingJobs });
     }
     catch (error) {
-        console.log(`error in admin Controler`);
+        console.log(`error in admin Controller`);
         next(error);
     }
 });
@@ -42,7 +48,7 @@ const addJobsController = (req, res, next) => __awaiter(void 0, void 0, void 0, 
         res.status(200).json({ "Job deleted ": saved });
     }
     catch (error) {
-        console.log(`error in admin Controler`);
+        console.log(`error in admin Controller`);
         next(error);
     }
 });
@@ -55,7 +61,7 @@ const updateJobsController = (req, res, next) => __awaiter(void 0, void 0, void 
         return res.status(200).json({ "Job updated": updated });
     }
     catch (error) {
-        console.log(`error in admin Controler`);
+        console.log(`error in admin Controller`);
         next(error);
     }
 });
@@ -68,7 +74,7 @@ const deleteJobsController = (req, res, next) => __awaiter(void 0, void 0, void 
         return res.status(200).json({ "Job deleted ": deleted });
     }
     catch (error) {
-        console.log(`error in admin Controler`);
+        console.log(`error in admin Controller`);
         next(error);
     }
 });
@@ -87,7 +93,7 @@ exports.deleteJobsController = deleteJobsController;
 //     next(error);
 //   }
 // };
-// see all applicatints
+// see all application's: includes pagination and aggregation
 const allApplicants = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const applicants = yield (0, openingsServices_1.getApplicants)(req.query);
@@ -95,6 +101,7 @@ const allApplicants = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         return res.status(200).json({ applicatints: applicants });
     }
     catch (error) {
+        console.log(`error in admin Controller`);
         console.log(error);
     }
 });

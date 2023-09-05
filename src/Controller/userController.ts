@@ -1,11 +1,13 @@
 import { NextFunction, Request, Response } from "express";
+
 import {
-  getJobListings,
+  // getJobListings,
   createAplication,
   getJobListingsId,
   sorting,
   myJobs,
   serchService,
+  
 } from "../Services/jobApplicaionServices";
 import { newUser, reqUser } from "../interfaces/interfaces";
 import {
@@ -17,10 +19,11 @@ import {
   resetService,
 } from "../Services/newUserService";
 
+//NOT ACTIVE!! (DUPLICATE OF SERCH SERVICE)
 const jobListing = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const getjobListing = await getJobListings();
-    res.status(200).json({ "Active job listings:": getjobListing });
+    // const getjobListing = await getJobListings();
+    // res.status(200).json({ "Active job listings:": getjobListing });
   } catch (error) {
     console.log("error in user controller");
     next(error);
@@ -58,7 +61,7 @@ const newUsercrete = async (
     next({
       err: error,
       status: 400,
-      message: "You have enterd some wrong details",
+      message: "You have entered some wrong details",
     });
   }
 };
@@ -67,13 +70,13 @@ const newUsercrete = async (
 const findJob = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const getjobListingId = await getJobListingsId(req.params.id);
-    res.status(200).json({ "Job listnings:": getjobListingId });
+    res.status(200).json({ "listenings": getjobListingId });
   } catch (error) {
     console.log("error in user controller");
     next({
       err: error,
       status: 400,
-      message: "You have enterd some wrong details",
+      message: "You have entered some wrong details",
     });
   }
 };
@@ -92,7 +95,7 @@ const sortController = async (
     next({
       err: error,
       status: 400,
-      message: "You have enterd some wrong details",
+      message: "You have entered some wrong details",
     });
   }
 };
@@ -110,7 +113,7 @@ const loginController = async (
     next({
       err: error,
       status: 400,
-      message: "You have enterd some wrong details",
+      message: "You have entered some wrong details",
     });
   }
 };
@@ -128,7 +131,7 @@ const GetmyJobs = async (req: Request, res: Response, next: NextFunction) => {
     next({
       err: error,
       status: 400,
-      message: "You have enterd some wrong details",
+      message: "You have entered some wrong details",
     });
   }
 };
@@ -165,7 +168,7 @@ const updateUserController = async (
     next({
       err: error,
       status: 400,
-      message: "You have enterd some wrong details",
+      message: "You have entered some wrong details",
     });
   }
 };

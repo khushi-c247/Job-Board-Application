@@ -4,23 +4,30 @@ import {
   updateJob,
   getApplicants,
   deleteJob,
-  viewjobOpeninigs,
+  // viewjobOpeninigs,
   // getUser,
   filterdApplications,
   viewjobByIdOpeninigs,
+  // getAllApplicants
 } from "../Services/openingsServices";
 
-//Send all the existig jobs
+
+//all applicaints 
+const applicaints =async (req:Request, res : Response, next : NextFunction) => {
+  // const result =await getAllApplicants();  
+  // return res.status(200).json({ "applicants": result});
+}
+//Send all the existing jobs
 const viewJobsController = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const existingJobs = await viewjobOpeninigs(req.query);
-    return res.status(200).json({ "Jobs exist in DB": existingJobs });
+    // const existingJobs = await viewjobOpeninigs();
+    // return res.status(200).json({ "Jobs exist in DB": existingJobs });
   } catch (error) {
-    console.log(`error in admin Controler`);
+    console.log(`error in admin Controller`);
     next(error);
   }
 };
@@ -35,7 +42,7 @@ const viewJobsByIdController = async (
     const existingJobs = await viewjobByIdOpeninigs(req.params.id);
     return res.status(200).json({ "Job by Id": existingJobs });
   } catch (error) {
-    console.log(`error in admin Controler`);
+    console.log(`error in admin Controller`);
     next(error);
   }
 };
@@ -50,7 +57,7 @@ const addJobsController = async (
     const saved = await addjobOpeninigs(req.body);
     res.status(200).json({ "Job deleted ": saved });
   } catch (error) {
-    console.log(`error in admin Controler`);
+    console.log(`error in admin Controller`);
     next(error);
   }
 };
@@ -66,7 +73,7 @@ const updateJobsController = async (
     const updated = await updateJob(req.body, id);
     return res.status(200).json({ "Job updated": updated });
   } catch (error) {
-    console.log(`error in admin Controler`);
+    console.log(`error in admin Controller`);
     next(error);
   }
 };
@@ -82,7 +89,7 @@ const deleteJobsController = async (
     const deleted = await deleteJob(id);
     return res.status(200).json({ "Job deleted ": deleted });
   } catch (error) {
-    console.log(`error in admin Controler`);
+    console.log(`error in admin Controller`);
     next(error);
   }
 };
@@ -101,13 +108,14 @@ const deleteJobsController = async (
 //   }
 // };
 
-// see all applicatints
+// see all application's: includes pagination and aggregation
 const allApplicants = async (req: Request, res: Response) => {
   try {
     const applicants = await getApplicants(req.query);
     // console.log(applicants);
     return res.status(200).json({ applicatints: applicants });
   } catch (error) {
+    console.log(`error in admin Controller`);
     console.log(error);
   }
 };
@@ -131,4 +139,5 @@ export {
   filterApplicants,
   viewJobsByIdController,
   allApplicants,
+  applicaints
 };

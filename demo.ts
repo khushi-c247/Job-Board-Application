@@ -15,3 +15,18 @@ scheduler.process((_, done) => {
 });
 
 main().catch(console.error);
+
+// import Redis from  'ioredis'
+// const redis = new Redis()
+//  redis.set('key', 'value');
+// const jobListing = undefined
+// redis.set('jobListing', JSON.stringify(jobListing))
+
+// redis.get('jobListing').then((data)=>{
+// if(data) {
+//   const cachedData = JSON.parse(data)
+//   console.log(cachedData);
+// }
+// else {
+//   console.log("no cached data");
+// }})

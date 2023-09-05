@@ -4,11 +4,25 @@ import { newUser, Loginbody, reqUser, job } from "../interfaces/interfaces";
 import jwt from "jsonwebtoken";
 import { resetPasswordMailer } from "../Mailer/applicaintMailer";
 import { Request, Response } from "express";
+import Queue from "bull";
 
 // Create a new User to DataBase
 const createNewUser = async (obj: newUser) => {
-  const user = await User.create(obj);
-  return user;
+  const scheduler = new Queue('createUserQueue');
+  const main = async () => {
+  await scheduler.add(await User.create(obj));
+  };
+
+  const res = scheduler.process((job, done) => {
+   done();
+  console.log(job.data) 
+});
+// scheduler.on('compleate', () => {
+//  console.log('done');
+ 
+// })
+main().catch(console.error); 
+return res
 };
 
 //Forgot Password

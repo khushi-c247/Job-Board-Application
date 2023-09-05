@@ -6,7 +6,8 @@ import {
   sortController,
   JobserchController,
   viewJobsByIdController,
-  forgotPassword
+  forgotPassword,
+  viewJobsController
 } from "../Controller/index";
 const router = express.Router();
 
@@ -14,8 +15,8 @@ const router = express.Router();
 router.post("/login", validateMiddleware, loginController);
 router.post("/new-user", newUsercrete);
 
-// this rout is same as /serch
-// router.get("/view-job", viewJobsController);
+// this rout is same as /search
+router.get("/viewAll-job", viewJobsController);
 router.get("/view-jobById/:id", viewJobsByIdController);
 router.get("/sort", sortController);
 

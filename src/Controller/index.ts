@@ -6,6 +6,7 @@ import {
   filterApplicants,
   viewJobsByIdController,
   allApplicants,
+  applicaints
 } from "./adminController";
 
 import {
@@ -28,6 +29,7 @@ export {
   addJobsController,
   updateJobsController,
   deleteJobsController,
+  applicaints,
   viewJobsController,
   filterApplicants,
   viewJobsByIdController,

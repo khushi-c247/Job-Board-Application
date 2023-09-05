@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteUserController = exports.forgotPassword = exports.updateUserController = exports.JobserchController = exports.GetmyJobs = exports.sortController = exports.loginController = exports.findJob = exports.newUsercrete = exports.newApplication = exports.jobListing = exports.allApplicants = exports.viewJobsByIdController = exports.filterApplicants = exports.viewJobsController = exports.deleteJobsController = exports.updateJobsController = exports.addJobsController = exports.resetPassword = void 0;
+exports.deleteUserController = exports.forgotPassword = exports.updateUserController = exports.JobserchController = exports.GetmyJobs = exports.sortController = exports.loginController = exports.findJob = exports.newUsercrete = exports.newApplication = exports.jobListing = exports.allApplicants = exports.viewJobsByIdController = exports.filterApplicants = exports.viewJobsController = exports.applicaints = exports.deleteJobsController = exports.updateJobsController = exports.addJobsController = exports.resetPassword = void 0;
 const adminController_1 = require("./adminController");
 Object.defineProperty(exports, "addJobsController", { enumerable: true, get: function () { return adminController_1.addJobsController; } });
 Object.defineProperty(exports, "updateJobsController", { enumerable: true, get: function () { return adminController_1.updateJobsController; } });
@@ -9,6 +9,7 @@ Object.defineProperty(exports, "viewJobsController", { enumerable: true, get: fu
 Object.defineProperty(exports, "filterApplicants", { enumerable: true, get: function () { return adminController_1.filterApplicants; } });
 Object.defineProperty(exports, "viewJobsByIdController", { enumerable: true, get: function () { return adminController_1.viewJobsByIdController; } });
 Object.defineProperty(exports, "allApplicants", { enumerable: true, get: function () { return adminController_1.allApplicants; } });
+Object.defineProperty(exports, "applicaints", { enumerable: true, get: function () { return adminController_1.applicaints; } });
 const userController_1 = require("./userController");
 Object.defineProperty(exports, "jobListing", { enumerable: true, get: function () { return userController_1.jobListing; } });
 Object.defineProperty(exports, "newApplication", { enumerable: true, get: function () { return userController_1.newApplication; } });

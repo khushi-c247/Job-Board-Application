@@ -12,35 +12,30 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.viewjobByIdOpeninigs = exports.filterdApplications = exports.viewjobOpeninigs = exports.deleteJob = exports.updateJob = exports.getApplicants = exports.addjobOpeninigs = void 0;
+exports.viewjobByIdOpeninigs = exports.filterdApplications = exports.deleteJob = exports.updateJob = exports.getApplicants = exports.addjobOpeninigs = void 0;
 const JobModel_1 = __importDefault(require("../Model/JobModel"));
 const UserModel_1 = __importDefault(require("../Model/UserModel"));
+const ioredis_1 = __importDefault(require("ioredis"));
+const redis = new ioredis_1.default();
 //View added jobs
-const viewjobOpeninigs = (obj) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const options = {
-            page: obj.page,
-            limit: obj.limit,
-        };
-        const result = JobModel_1.default.aggregate([
-            {
-                $project: {
-                    _id: 0,
-                    title: 1,
-                    discription: 1,
-                    requirements: 1,
-                    salary: 1,
-                },
-            },
-        ]);
-        const response = yield JobModel_1.default.aggregatePaginate(result, options);
-        return response;
-    }
-    catch (error) {
-        console.log(`Error in Opening Services ${error}`);
-    }
-});
-exports.viewjobOpeninigs = viewjobOpeninigs;
+// const viewjobOpeninigs = async () => {
+//   const cachedData = await redis.get("result");
+//   if (cachedData) {
+//     const parsedData = JSON.parse(cachedData);
+//     console.log(parsedData);
+//     return parsedData;
+//   }
+//   else {
+//     console.log("No cached data");
+//     try {
+//       const result = await Job.find()
+//       redis.set("result", JSON.stringify(result));
+//       return result;
+//     } catch (error) {
+//       console.log(`Error in Opening Services ${error}`);
+//     }
+// };
+// }
 //View jobs by id
 const viewjobByIdOpeninigs = (id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -121,33 +116,44 @@ exports.deleteJob = deleteJob;
 // };
 const getApplicants = (obj) => __awaiter(void 0, void 0, void 0, function* () {
     const { page, limit } = obj;
-    const results = UserModel_1.default.aggregate([
-        {
-            $lookup: {
-                from: "jobs",
-                localField: "appliedTo",
-                foreignField: "_id",
-                as: "appliedTo",
+    const cachedData = yield redis.get(`response?page=${page}?limit=${limit}`);
+    if (cachedData) {
+        const parsedData = JSON.parse(cachedData);
+        console.log(parsedData);
+        return parsedData;
+    }
+    else {
+        const results = UserModel_1.default.aggregate([
+            {
+                $lookup: {
+                    from: "jobs",
+                    localField: "appliedTo",
+                    foreignField: "_id",
+                    as: "appliedTo",
+                },
             },
-        },
-        { $unwind: "$appliedTo" },
-        {
-            $project: {
-                _id: 0,
-                name: 1,
-                experience: 1,
-                graduationYear: 1,
-                discription: 1,
-                appliedTo: "$appliedTo.title",
+            { $unwind: "$appliedTo" },
+            {
+                $project: {
+                    _id: 0,
+                    name: 1,
+                    experience: 1,
+                    graduationYear: 1,
+                    discription: 1,
+                    appliedTo: "$appliedTo.title",
+                },
             },
-        },
-    ]);
-    const options = { page, limit };
-    const response = yield UserModel_1.default.aggregatePaginate(results, options)
-        .then((result) => result)
-        .catch((err) => console.log(err));
-    return response;
-    // console.log(response);
+        ]);
+        const options = { page, limit };
+        const response = yield UserModel_1.default.aggregatePaginate(results, options)
+            .then((result) => result)
+            .catch((err) => console.log(err));
+        // console.log(response)
+        redis.set(`response?page=${page}?limit=${limit}`, JSON.stringify(results));
+        return response;
+        // console.log(response);
+    }
+    ;
 });
 exports.getApplicants = getApplicants;
 //get fillterd applications
@@ -168,34 +174,44 @@ const filterdApplications = (reqQuery) => __awaiter(void 0, void 0, void 0, func
         });
         filterQuery.$or = or;
     }
-    const results = UserModel_1.default.aggregate([
-        { $match: filterQuery },
-        {
-            $lookup: {
-                from: "jobs",
-                localField: "appliedTo",
-                foreignField: "_id",
-                as: "appliedTo",
+    const cachedData = yield redis.get(`response?colm=${search}?page=${page}?limit=${limit}`);
+    if (cachedData) {
+        const parsedData = JSON.parse(cachedData);
+        console.log(parsedData);
+        return parsedData;
+    }
+    else {
+        console.log("No cached data");
+        const results = UserModel_1.default.aggregate([
+            { $match: filterQuery },
+            {
+                $lookup: {
+                    from: "jobs",
+                    localField: "appliedTo",
+                    foreignField: "_id",
+                    as: "appliedTo",
+                },
             },
-        },
-        { $unwind: "$appliedTo" },
-        {
-            $project: {
-                _id: 0,
-                name: 1,
-                experience: 1,
-                graduationYear: 1,
-                discription: 1,
-                appliedTo: "$appliedTo.title",
+            { $unwind: "$appliedTo" },
+            {
+                $project: {
+                    _id: 0,
+                    name: 1,
+                    experience: 1,
+                    graduationYear: 1,
+                    discription: 1,
+                    appliedTo: "$appliedTo.title",
+                },
             },
-        },
-    ]);
-    // console.log(results);
-    const options = { page, limit };
-    const response = yield UserModel_1.default.aggregatePaginate(results, options)
-        .then((result) => result)
-        .catch((err) => console.log(err));
-    // console.log(response)
-    return response;
+        ]);
+        // console.log(results);
+        const options = { page, limit };
+        const response = yield UserModel_1.default.aggregatePaginate(results, options)
+            .then((result) => result)
+            .catch((err) => console.log(err));
+        // console.log(response)
+        redis.set(`response?colm=${search}?page=${page}?limit=${limit}`, JSON.stringify(results));
+        return response;
+    }
 });
 exports.filterdApplications = filterdApplications;

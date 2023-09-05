@@ -5,6 +5,7 @@ import {
   deleteJobsController,
   // getUserController,
   filterApplicants,
+  applicaints,
   allApplicants,
 } from "../Controller/index";
 import authorization from "../Middleware/auth";
@@ -32,6 +33,8 @@ router.delete(
   authorization(admin),
   deleteJobsController
 );
+router.get('/getAllApplicatins',passport.authenticate("jwt", { session: false }),
+authorization(admin),applicaints)
 
 // get user through email
 // router.get(
@@ -44,7 +47,7 @@ router.delete(
 //TODO:Impliment serch functionality
 // Applicaints router
 
-// Get applicaints
+// see all applicatints: includes pagination and aggrigation
 router.get(
   "/get-applications",
   passport.authenticate("jwt", { session: false }),
